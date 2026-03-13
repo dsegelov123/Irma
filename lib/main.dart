@@ -20,6 +20,11 @@ import 'screens/settings_screen.dart';
 import 'screens/sharing_settings_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'screens/privacy_center_screen.dart';
+import 'screens/symptoms_screen.dart';
+import 'screens/tracker_screen.dart';
+import 'screens/calendar_screen.dart';
+import 'screens/chat_screen.dart';
+import 'screens/main_shell.dart';
 import 'services/notification_service.dart';
 import 'services/error_reporting_service.dart';
 
@@ -97,7 +102,7 @@ class IrmaApp extends ConsumerWidget {
         ),
       ),
       home: isInitialized.when(
-        data: (_) => userProfile == null ? const OnboardingScreen() : const DashboardScreen(),
+        data: (_) => userProfile == null ? const OnboardingScreen() : const MainShell(),
         loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
         error: (err, stack) => Scaffold(body: Center(child: Text('Error: $err'))),
       ),
@@ -110,6 +115,10 @@ class IrmaApp extends ConsumerWidget {
         '/sharing': (context) => const SharingSettingsScreen(),
         '/notifications': (context) => const NotificationSettingsScreen(),
         '/privacy-center': (context) => const PrivacyCenterScreen(),
+        '/symptoms': (context) => const SymptomsScreen(),
+        '/tracker': (context) => const TrackerScreen(),
+        '/calendar': (context) => const CalendarScreen(),
+        '/chat': (context) => const ChatScreen(),
       },
     );
   }

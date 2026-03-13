@@ -53,8 +53,8 @@ class _CycleRingState extends State<CycleRing> with SingleTickerProviderStateMix
           animation: _pulseAnimation,
           builder: (context, child) {
             return SizedBox(
-              width: 240, // Increased size for glow
-              height: 240,
+              width: 280, 
+              height: 280,
               child: TweenAnimationBuilder<double>(
                 duration: const Duration(seconds: 1),
                 curve: Curves.easeOutCubic,
@@ -73,37 +73,28 @@ class _CycleRingState extends State<CycleRing> with SingleTickerProviderStateMix
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      const Icon(Icons.water_drop, color: AppColors.primary, size: 32),
+                      const SizedBox(height: 8),
                       Text(
-                        'Day',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textSecondary,
-                          letterSpacing: 1.5,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        '${widget.currentDayOfCycle}',
-                        style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                          fontSize: 64,
+                        'Day ${widget.currentDayOfCycle}',
+                        style: const TextStyle(
+                          fontFamily: 'Lufga',
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
                           height: 1.1,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: phaseColor.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: Text(
-                          widget.currentPhase,
+                          'Low chance of getting pregnant',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 14,
-                            color: phaseColor.withOpacity(0.9),
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
+                            fontSize: 12,
+                            color: AppColors.textSecondary.withOpacity(0.8),
+                            height: 1.4,
                           ),
                         ),
                       ),
@@ -133,25 +124,33 @@ class _CycleRingPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = min(size.width / 2, size.height / 2) - 30; // Margin for glow
-    const strokeWidth = 14.0;
+    final radius = min(size.width / 2, size.height / 2) - 20;
+    const strokeWidth = 12.0;
 
-    // Background track
+    // 1. Dotted Background Track
     final trackPaint = Paint()
-      ..color = AppColors.border.withOpacity(0.5)
+      ..color = AppColors.border.withOpacity(0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round;
+
+    final double dashLength = (2 * pi * radius) / 60; // 60 dots
+    for (double i = 0; i < 2 * pi; i += dashLength / radius * 2) {
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        i - pi / 2,
+        0.02,
+        false,
+        trackPaint,
+      );
+    }
+
+    // 2. Solid Phase Arc
+    final phasePaint = Paint()
+      ..color = phaseColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
-
-    canvas.drawCircle(center, radius, trackPaint);
-
-    // Pulsing Glow
-    final glowPaint = Paint()
-      ..color = phaseColor.withOpacity(0.3 * pulseValue)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth + (10.0 * pulseValue)
-      ..strokeCap = StrokeCap.round
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 12.0 * pulseValue + 4.0);
 
     const startAngle = -pi / 2;
     final sweepAngle = animatedProgress * 2 * pi;
@@ -161,23 +160,26 @@ class _CycleRingPainter extends CustomPainter {
       startAngle,
       sweepAngle,
       false,
-      glowPaint,
+      phasePaint,
     );
 
-    // Progress arc
-    final progressPaint = Paint()
-      ..color = phaseColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
+    // 3. Optional Glow for Pulse
+    if (pulseValue > 0.1) {
+      final glowPaint = Paint()
+        ..color = phaseColor.withOpacity(0.15 * pulseValue)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth + 8
+        ..strokeCap = StrokeCap.round
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 10.0 * pulseValue);
 
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepAngle,
-      false,
-      progressPaint,
-    );
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        sweepAngle,
+        false,
+        glowPaint,
+      );
+    }
   }
 
   @override

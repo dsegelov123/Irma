@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/cycle_ring.dart';
-import '../widgets/app_card.dart';
+import '../widgets/weekly_strip.dart';
+import '../widgets/kawaii_asset.dart';
 import '../theme/app_colors.dart';
 import '../providers/app_state_providers.dart';
 import '../models/daily_log.dart';
@@ -161,126 +162,182 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final personalizedLength = ref.watch(personalizedCycleLengthProvider);
     final currentDay = ref.watch(currentCycleDayProvider);
 
+  @override
+  Widget build(BuildContext context) {
+    final profile = ref.watch(userProfileProvider);
+    
+    if (profile == null) {
+      return const Scaffold(body: Center(child: Text("Profile not found")));
+    }
+
+    final currentPhase = ref.watch(currentPhaseProvider);
+    final personalizedLength = ref.watch(personalizedCycleLengthProvider);
+    final currentDay = ref.watch(currentCycleDayProvider);
+
     final phaseColor = AppColors.getPhaseColor(currentPhase);
+    final surfaceWash = AppColors.getSurfaceWash(currentPhase);
 
     return Scaffold(
-      backgroundColor: phaseColor.withOpacity(0.05),
-      appBar: AppBar(
-        title: Text(
-          "Irma's Wisdom",
-          style: Theme.of(context).textTheme.titleLarge,
+      backgroundColor: Colors.white,
+      body: Container(
+        decoration: BoxDecoration(
+          color: surfaceWash.withOpacity(0.4),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.analytics_outlined),
-            onPressed: () => Navigator.pushNamed(context, '/analytics'),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // 1. Bespoke Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Icon(Icons.notes, color: Colors.grey),
+                    const Expanded(
+                      child: Center(
+                        child: Text(
+                          'Hi, Gargi',
+                          style: TextStyle(
+                            fontFamily: 'Lufga',
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.notifications_none_outlined, color: Colors.grey),
+                      onPressed: () {},
+                    )
+                  ],
+                ),
+              ),
+
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Column(
+                    children: [
+                      // 2. Weekly Date Strip
+                      WeeklyStrip(selectedDate: DateTime.now()),
+                      
+                      const SizedBox(height: 32),
+
+                      // 3. Cycle Ring
+                      CycleRing(
+                        currentDayOfCycle: currentDay,
+                        totalCycleLength: personalizedLength,
+                        currentPhase: currentPhase,
+                      ),
+                      const SizedBox(height: 32),
+
+                      // 4. Insight Card (The Spark)
+                      _buildInsightCard(context),
+
+                      const SizedBox(height: 32),
+
+                      // 5. Straight Quick-Logging Cards
+                      _buildQuickLogSection(),
+                      
+                      const SizedBox(height: 40),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () => Navigator.pushNamed(context, '/settings'),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInsightCard(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top: Cycle Ring
-              CycleRing(
-                currentDayOfCycle: currentDay,
-                totalCycleLength: personalizedLength,
-                currentPhase: currentPhase,
-              ),
-              const SizedBox(height: 32),
-
-              // Middle: AI Insight (The Insight Spark)
-              Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    gradient: const LinearGradient(
-                      colors: [AppColors.aiSparkStart, AppColors.aiSparkEnd],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.aiSparkEnd.withOpacity(0.2),
-                        blurRadius: 15,
-                        offset: const Offset(0, 8),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const KawaiiAsset.mood(KawaiiMood.thinking, size: 24),
+                const SizedBox(width: 12),
+                Text(
+                  "Auntie's Observation",
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontSize: 16,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.all(2), // Gradient border width
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                    ),
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                             const Icon(Icons.auto_awesome, color: AppColors.primary, size: 20),
-                             const SizedBox(width: 8),
-                             Text(
-                               "Auntie's Observation",
-                               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                 fontSize: 18,
-                                 color: AppColors.primary,
-                               ),
-                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        _isLoadingInsight 
-                          ? const LinearProgressIndicator(minHeight: 2, backgroundColor: AppColors.background)
-                          : Text(
-                              _aiInsight,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                height: 1.5,
-                                color: AppColors.textPrimary,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                      ],
-                    ),
-                  ),
                 ),
-              // Dashboard Navigation Buttons
-              Row(
-                children: [
-                   Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => Navigator.pushNamed(context, '/analytics'),
-                      icon: const Icon(Icons.trending_up),
-                      label: const Text('Trends'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _isLoadingInsight
+                ? const LinearProgressIndicator(minHeight: 2, backgroundColor: Color(0xFFF7F6F6))
+                : Text(
+                    _aiInsight,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      height: 1.5,
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => Navigator.pushNamed(context, '/wellness'),
-                      icon: const Icon(Icons.spa),
-                      label: const Text('Wellness'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickLogSection() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        children: [
+          _buildLoggingCard(KawaiiMood.happy, 'Mood', const Color(0xFFFFF2EF)),
+          _buildLoggingCard(KawaiiMood.sad, 'Cramps', const Color(0xFFFFF2F5)),
+          _buildLoggingCard(KawaiiMood.sleepy, 'Drugs', const Color(0xFFEFFAFF)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoggingCard(KawaiiMood mood, String label, Color bgColor) {
+    return Container(
+      width: 120,
+      margin: const EdgeInsets.only(right: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          KawaiiAsset.mood(mood, size: 48),
+          const SizedBox(height: 12),
+          Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+          const SizedBox(height: 4),
+          const Text('how are you\nfeeling?', textAlign: TextAlign.center, style: TextStyle(fontSize: 10, color: Colors.grey)),
+        ],
+      ),
+    );
+  }
               const SizedBox(height: 40),
 
               // Bottom: Quick Logging
