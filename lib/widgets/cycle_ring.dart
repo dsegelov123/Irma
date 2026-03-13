@@ -15,17 +15,26 @@ class CycleRing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double progress = currentDayOfCycle / totalCycleLength;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
           width: 200,
           height: 200,
-          child: CustomPaint(
-            painter: _CycleRingPainter(
-              currentDayOfCycle: currentDayOfCycle,
-              totalCycleLength: totalCycleLength,
-            ),
+          child: TweenAnimationBuilder<double>(
+            duration: const Duration(seconds: 1), // Adjusted duration for smoother animation
+            curve: Curves.easeOutCubic,
+            tween: Tween(begin: 0.0, end: progress),
+            builder: (context, animatedProgress, child) {
+              return CustomPaint(
+                painter: _CycleRingPainter(
+                  animatedProgress: animatedProgress,
+                ),
+                child: child, // Pass the child through
+              );
+            },
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

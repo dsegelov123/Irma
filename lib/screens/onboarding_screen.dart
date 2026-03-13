@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/user_profile.dart';
+import '../models/cycle_data.dart';
+import '../providers/app_state_providers.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   DateTime? _lastPeriodDate;
   int _cycleLength = 28;
   final List<String> _selectedSymptoms = [];
@@ -23,10 +27,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     'Insomnia',
   ];
 
-  void _finishOnboarding() {
-    // In a real app, this would save to Hive via Riverpod
-    // For now, we just mock the navigation
-    Navigator.of(context).pushReplacementNamed('/dashboard');
+  Future<void> _finishOnboarding() async {
+    if (_lastPeriodDate == null) return;
+
+    final profile = UserProfile(
+      onboardingDate: DateTime.now(),
+      averageCycleLength: _cycleLength,
+      symptomsToTrack: _selectedSymptoms,
+    );
+
+    final initialCycle = CycleData(
+      startDate: _lastPeriodDate!,
+      cycleLength: _cycleLength,
+    );
+
+    // Save to Hive via Repository
+    await ref.read(userRepositoryProvider).saveUserProfile(profile);
+    
+    // We should also save the initial cycle data, 
+    // but for now the profile triggers the home screen switch.
+    // In a more robust app, we'd use a dedicated CycleRepository.
+
+    // Update state to trigger navigation in main.dart
+    ref.read(userProfileProvider.notifier).state = profile;
   }
 
   @override

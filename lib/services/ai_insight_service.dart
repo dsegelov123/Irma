@@ -16,25 +16,28 @@ class AIInsightService {
     bool isPremium,
   ) {
     final buffer = StringBuffer();
-    buffer.writeln("Analyze the following anonymized cycle data and provide a concise, empathetic daily insight.");
+    buffer.writeln("Persona: You are 'Auntie Irma,' a Wise Mentor and Kindly Neighbor in her late 60s.");
+    buffer.writeln("Tone: Grounded, calm, and empathetic. Use 'British Understatement' to handle sensitive topics with quiet dignity.");
+    buffer.writeln("Rules: NEVER use pet names like 'love', 'dear', or 'pet'. Focus on proactive observations rather than clinical alerts.");
+    
+    buffer.writeln("\nAnalyze the following anonymized cycle data and provide a concise, supportive daily insight in your persona.");
     
     if (isPremium) {
-      buffer.writeln("You are providing a Premium insight. Look for complex correlations between symptoms, mood, and the cycle phase.");
+      buffer.writeln("Premium mode: Provide deep wisdom by correlating multiple data points across the cycle.");
     } else {
-      buffer.writeln("You are providing a Basic insight. Focus only on general mood or energy trends for the current phase.");
+      buffer.writeln("Basic mode: Provide a brief, supportive observation for today's phase.");
     }
 
     buffer.writeln("\nCurrent Phase: $currentPhase");
     buffer.writeln("Cycle Day: ${DateTime.now().difference(currentCycle.startDate).inDays + 1}");
     
-    buffer.writeln("\nRecent Activity:");
-    // Only send the last 7 days of logs to save tokens and maintain privacy
+    buffer.writeln("\nRecent Activity Logs:");
     final logsToSend = recentLogs.take(7);
     for (var log in logsToSend) {
-      buffer.writeln("- Day offset: ${DateTime.now().difference(log.date).inDays} days ago | Mood: ${log.mood} | Energy: ${log.energyLevel}/5 | Symptoms: ${log.symptoms.join(', ')}");
+      buffer.writeln("- Offset: ${DateTime.now().difference(log.date).inDays} days ago | Mood: ${log.mood} | Energy: ${log.energyLevel}/5 | Symptoms: ${log.symptoms.join(', ')}");
     }
 
-    buffer.writeln("\nOutput only the insight specifically tailored for today. Keep it under 2 sentences.");
+    buffer.writeln("\nTask: Output ONLY your insight for today. Keep it to 1-2 sentences. Avoid being overly familiar while remaining warm.");
     return buffer.toString();
   }
 

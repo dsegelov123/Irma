@@ -1,15 +1,16 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../services/subscription_service.dart';
+import '../providers/app_state_providers.dart';
 
-class PaywallScreen extends StatefulWidget {
+class PaywallScreen extends ConsumerStatefulWidget {
   const PaywallScreen({super.key});
 
   @override
-  State<PaywallScreen> createState() => _PaywallScreenState();
+  ConsumerState<PaywallScreen> createState() => _PaywallScreenState();
 }
 
-class _PaywallScreenState extends State<PaywallScreen> {
+class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   List<Package> _packages = [];
   bool _isLoading = true;
 
@@ -21,16 +22,27 @@ class _PaywallScreenState extends State<PaywallScreen> {
 
   Future<void> _fetchOfferings() async {
     final packages = await SubscriptionService.getOfferings();
-    setState(() {
-      _packages = packages;
-      _isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _packages = packages;
+        _isLoading = false;
+      });
+    }
   }
 
   Future<void> _purchasePackage(Package package) async {
     setState(() => _isLoading = true);
     final isPremium = await SubscriptionService.purchasePackage(package);
+    
     if (isPremium) {
+      // Update local profile and provider
+      final profile = ref.read(userProfileProvider);
+      if (profile != null) {
+        profile.isPremium = true;
+        await ref.read(userRepositoryProvider).saveUserProfile(profile);
+        ref.read(userProfileProvider.notifier).state = profile;
+      }
+      
       if (!mounted) return;
       Navigator.of(context).pop(true); // Return success
     } else {
