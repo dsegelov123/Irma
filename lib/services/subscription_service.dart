@@ -50,8 +50,8 @@ class SubscriptionService {
   /// Initiates the purchase flow for a specific package
   static Future<bool> purchasePackage(Package package) async {
     try {
-      final customerInfo = await Purchases.purchasePackage(package);
-      return customerInfo.entitlements.all['premium']?.isActive ?? false;
+      final result = await Purchases.purchasePackage(package);
+      return result.customerInfo.entitlements.all['premium']?.isActive ?? false;
     } catch (e) {
       debugPrint('Purchase failed: $e');
       return false;

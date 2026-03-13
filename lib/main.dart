@@ -73,17 +73,20 @@ class IrmaApp extends ConsumerWidget {
         textTheme: GoogleFonts.interTextTheme(
           Theme.of(context).textTheme,
         ).copyWith(
-          displayLarge: GoogleFonts.lufga(
-            textStyle: Theme.of(context).textTheme.displayLarge,
+          displayLarge: const TextStyle(
+            fontFamily: 'Lufga',
             fontWeight: FontWeight.bold,
+            fontSize: 32, // Adjusting to match usual displayLarge size
           ),
-          headlineMedium: GoogleFonts.lufga(
-            textStyle: Theme.of(context).textTheme.headlineMedium,
+          headlineMedium: const TextStyle(
+            fontFamily: 'Lufga',
             fontWeight: FontWeight.bold,
+            fontSize: 24,
           ),
-          titleLarge: GoogleFonts.lufga(
-            textStyle: Theme.of(context).textTheme.titleLarge,
+          titleLarge: const TextStyle(
+            fontFamily: 'Lufga',
             fontWeight: FontWeight.w600,
+            fontSize: 20,
           ),
         ),
         pageTransitionsTheme: const PageTransitionsTheme(
@@ -102,7 +105,7 @@ class IrmaApp extends ConsumerWidget {
         '/dashboard': (context) => const DashboardScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
         '/analytics': (context) => const AnalyticsDashboard(),
-        '/wellness': (context) => const WellnessIntegration(currentPhase: 'Tracking...'),
+        '/wellness': (context) => const WellnessIntegration(),
         '/settings': (context) => const SettingsScreen(),
         '/sharing': (context) => const SharingSettingsScreen(),
         '/notifications': (context) => const NotificationSettingsScreen(),

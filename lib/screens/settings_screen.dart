@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/cycle_calculator.dart';
 import '../providers/app_state_providers.dart';
 import '../models/user_profile.dart';
 import 'paywall_screen.dart';
@@ -208,7 +209,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: const Text('Notifications'),
               subtitle: const Text('Auntie\'s nudges, frequency, and privacy.'),
               trailing: const Icon(Icons.chevron_right),
-              onPressed: () => Navigator.pushNamed(context, '/notifications'),
+              onTap: () => Navigator.pushNamed(context, '/notifications'),
             ),
             const SizedBox(height: 16),
             ListTile(
@@ -216,7 +217,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: const Text('Partner Sharing'),
               subtitle: const Text('Optional: Manage what you share with your partner.'),
               trailing: const Icon(Icons.chevron_right),
-              onPressed: () => Navigator.pushNamed(context, '/sharing'),
+              onTap: () => Navigator.pushNamed(context, '/sharing'),
             ),
             const SizedBox(height: 32),
             const Text(
@@ -229,7 +230,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: const Text('Health Integration'),
               subtitle: const Text('Sync Sleep & Steps for better insights.'),
               trailing: const Icon(Icons.sync),
-              onPressed: () async {
+              onTap: () async {
                 final success = await HealthSyncService.requestPermissions();
                 if (success) {
                    final syncManager = CycleSyncManager(ref as WidgetRef);
@@ -246,11 +247,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               leading: const Icon(Icons.widgets_outlined, color: AppColors.primary),
               title: const Text('Update Widgets'),
               subtitle: const Text('Refresh your home screen insight.'),
-              onPressed: () async {
+              onTap: () async {
                 final logs = ref.read(dailyLogsProvider);
                 // Simple placeholder logic for widget update trigger
                 if (profile != null) {
-                  await WidgetService.updateWidgets(profile, 'Tracking...', 'Open Irma for today\'s wisdom.');
+                  final cycleDay = ref.read(currentCycleDayProvider);
+                  await WidgetService.updateWidgets(profile, 'Tracking...', 'Open Irma for today\'s wisdom.', cycleDay);
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Widgets refreshed!')),
@@ -270,19 +272,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: const Text('Privacy Center'),
               subtitle: const Text('See how Auntie Irma guards your secrets.'),
               trailing: const Icon(Icons.chevron_right),
-              onPressed: () => Navigator.pushNamed(context, '/privacy-center'),
+              onTap: () => Navigator.pushNamed(context, '/privacy-center'),
             ),
             ListTile(
               leading: const Icon(Icons.description_outlined, color: AppColors.primary),
               title: const Text('Terms of Service'),
               trailing: const Icon(Icons.open_in_new, size: 16, color: Colors.grey),
-              onPressed: () => _launchURL('https://irma.app/terms'),
+              onTap: () => _launchURL('https://irma.app/terms'),
             ),
             ListTile(
               leading: const Icon(Icons.policy_outlined, color: AppColors.primary),
               title: const Text('Privacy Policy'),
               trailing: const Icon(Icons.open_in_new, size: 16, color: Colors.grey),
-              onPressed: () => _launchURL('https://irma.app/privacy'),
+              onTap: () => _launchURL('https://irma.app/privacy'),
             ),
             const SizedBox(height: 32),
             const Text(
@@ -295,13 +297,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: const Text('Send Feedback'),
               subtitle: const Text('Auntie Irma is always listening.'),
               trailing: const Icon(Icons.chevron_right),
-              onPressed: _showFeedbackDialog,
+              onTap: _showFeedbackDialog,
             ),
             ListTile(
               leading: const Icon(Icons.help_outline, color: AppColors.primary),
               title: const Text('Help Center'),
               trailing: const Icon(Icons.open_in_new, size: 16, color: Colors.grey),
-              onPressed: () {},
+              onTap: () {},
             ),
             const SizedBox(height: 48),
             SizedBox(

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/app_state_providers.dart';
 import 'health_sync_service.dart';
 import 'notification_service.dart';
+import 'cycle_calculator.dart';
 
 class CycleSyncManager {
   final WidgetRef _ref;
@@ -32,4 +33,3 @@ class CycleSyncManager {
     }
   }
 }
-```

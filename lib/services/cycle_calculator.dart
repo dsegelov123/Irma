@@ -1,3 +1,5 @@
+import '../models/daily_log.dart';
+
 class CycleCalculator {
   /// Defines standard cycle phases
   static const String menstrual = 'Menstrual Phase';
@@ -65,7 +67,7 @@ class CycleCalculator {
     }
 
     // Typical ovulation happens ~14 days before the END of the cycle.
-    final estimatedOvulationDay = averageCycleLength - 14;
+    final estimatedOvulationDay = cycleLength - 14;
     
     // 2. Ovulation Window (3 days before to 1 day after ovulation)
     final ovulationWindowStart = estimatedOvulationDay - 3;
@@ -77,7 +79,7 @@ class CycleCalculator {
     }
 
     // 4. Follicular Phase (Post-period until ovulation window)
-    if (dayOfCycle > averagePeriodLength && dayOfCycle < ovulationWindowStart) {
+    if (dayOfCycle > periodLength && dayOfCycle < ovulationWindowStart) {
        return follicular;
     }
     

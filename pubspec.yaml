@@ -32,7 +32,7 @@ dependencies:
 
   # Data Export & Sharing (Phase 17)
   csv: ^6.0.0
-  share_plus: ^9.0.0
+  share_plus: ^10.1.0
 
   # Ecosystem & Widgets (Phase 18)
   health: ^10.0.0
@@ -59,3 +59,19 @@ flutter:
 
   assets:
     - .env
+    - assets/fonts/
+
+  fonts:
+    - family: Lufga
+      fonts:
+        - asset: assets/fonts/LufgaRegular.ttf
+        - asset: assets/fonts/LufgaBold.ttf
+          weight: 700
+        - asset: assets/fonts/LufgaMedium.ttf
+          weight: 500
+        - asset: assets/fonts/LufgaSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/LufgaLight.ttf
+          weight: 300
+        - asset: assets/fonts/LufgaThin.ttf
+          weight: 100

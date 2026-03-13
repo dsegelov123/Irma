@@ -27,7 +27,7 @@ class ExportService {
       rows.add([
         DateFormat('yyyy-MM-dd').format(log.date),
         cycleDay,
-        log.moodEmoji,
+        log.mood,
         log.energyLevel,
         log.symptoms.join(", "),
       ]);

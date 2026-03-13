@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/cycle_calculator.dart';
 import '../providers/app_state_providers.dart';
 import '../models/daily_log.dart';
 import '../theme/app_colors.dart';
@@ -109,7 +110,14 @@ class AnalyticsDashboard extends ConsumerWidget {
                         color: phaseColor, // Use phase-based color
                         barWidth: 4,
                         isStrokeCapRound: true,
-                        dotData: FlDotData(show: true, color: phaseColor), // Use phase-based color for dots
+                        dotData: FlDotData(
+                          show: true,
+                          getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
+                            color: phaseColor,
+                            radius: 3,
+                            strokeWidth: 0,
+                          ),
+                        ),
                         belowBarData: BarAreaData(
                           show: true,
                           color: phaseColor.withOpacity(0.1), // Use phase-based color
@@ -133,7 +141,7 @@ class AnalyticsDashboard extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
 
-            // Real Symptom Bar Chart
+            // Real Symptom Chart
             AppCard(
               borderRadius: 24,
               child: SizedBox(
@@ -155,43 +163,25 @@ class AnalyticsDashboard extends ConsumerWidget {
                             if (value.toInt() < symptomNames.length) {
                               return SideTitleWidget(
                                 axisSide: meta.axisSide,
-                                child: Text(symptomNames[value.toInt()], style: const TextStyle(fontSize: 10, color: AppColors.textSecondary, fontFamily: 'Inter')),
+                                child: Text(
+                                  symptomNames[value.toInt()],
+                                  style: const TextStyle(fontSize: 10, color: AppColors.textSecondary, fontFamily: 'Inter'),
+                                ),
                               );
-                  height: 200,
-                  child: BarChart(
-                    BarChartData(
-                      alignment: BarChartAlignment.spaceAround,
-                      maxY: logs.length.toDouble(),
-                      barTouchData: BarTouchData(enabled: true),
-                      titlesData: FlTitlesData(
-                        leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: (double value, TitleMeta meta) {
-                              final symptomNames = ['Headache', 'Cramps', 'Fatigue', 'Bloating'];
-                              if (value.toInt() < symptomNames.length) {
-                                return SideTitleWidget(
-                                  axisSide: meta.axisSide,
-                                  child: Text(symptomNames[value.toInt()], style: const TextStyle(fontSize: 10, color: AppColors.textSecondary)),
-                                );
-                              }
-                              return const SizedBox();
-                            },
-                          ),
+                            }
+                            return const SizedBox();
+                          },
                         ),
                       ),
-                      gridData: const FlGridData(show: false),
-                      borderData: FlBorderData(show: false),
-                      barGroups: _generateSymptomGroups(logs),
                     ),
+                    gridData: const FlGridData(show: false),
+                    borderData: FlBorderData(show: false),
+                    barGroups: _generateSymptomGroups(logs),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
