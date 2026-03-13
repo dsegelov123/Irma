@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'sharing_settings.dart';
+import 'notification_settings.dart';
 
 part 'user_profile.g.dart';
 
@@ -29,6 +30,9 @@ class UserProfile extends HiveObject {
   @HiveField(7)
   SharingSettings? sharingSettings;
 
+  @HiveField(8)
+  NotificationSettings? notificationSettings;
+
   UserProfile({
     required this.onboardingDate,
     this.averageCycleLength = 28,
@@ -38,5 +42,6 @@ class UserProfile extends HiveObject {
     this.lastInsight,
     this.lastInsightDate,
     this.sharingSettings,
+    this.notificationSettings,
   });
 }

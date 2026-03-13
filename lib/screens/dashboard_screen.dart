@@ -8,6 +8,9 @@ import '../models/daily_log.dart';
 import '../services/cycle_calculator.dart';
 import '../services/ai_insight_service.dart';
 import '../models/cycle_data.dart';
+import '../services/widget_service.dart';
+import '../services/cycle_sync_manager.dart';
+import '../providers/app_state_providers.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -32,6 +35,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     super.initState();
     _loadTodayLog();
     _fetchAIInsight();
+    _syncHealthData();
+  }
+
+  Future<void> _syncHealthData() async {
+     // Trigger passive health ingestion on load
+     final syncManager = CycleSyncManager(ref as WidgetRef);
+     await syncManager.syncWithHealth();
   }
 
   void _loadTodayLog() {
@@ -71,22 +81,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       return;
     }
 
-    // Otherwise fetch new insight
+    final phase = ref.read(currentPhaseProvider);
+    final personalizedLength = ref.read(personalizedCycleLengthProvider);
+    final cycleDay = ref.read(currentCycleDayProvider);
+
     final currentCycle = CycleData(
       startDate: profile.onboardingDate, 
-      cycleLength: profile.averageCycleLength,
-    );
-
-    final phase = CycleCalculator.getCurrentPhase(
-      currentCycle.startDate, 
-      profile.averageCycleLength, 
-      profile.averagePeriodLength
+      cycleLength: personalizedLength,
     );
 
     final insight = await AIInsightService.generateDailyInsight(
       recentLogs: logs,
       currentCycle: currentCycle,
       currentPhase: phase,
+      cycleDay: cycleDay,
       isPremium: profile.isPremium,
     );
 
@@ -100,6 +108,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         _aiInsight = insight;
         _isLoadingInsight = false;
       });
+      // Update Home Screen Widget
+      await WidgetService.updateWidgets(profile, phase, insight, cycleDay);
     }
   }
 
@@ -127,6 +137,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Daily log saved!')),
       );
+      
+      // Update widgets to reflect "Logged" state if needed
+      final profile = ref.read(userProfileProvider);
+      if (profile != null) {
+        final phase = ref.read(currentPhaseProvider);
+        final cycleDay = ref.read(currentCycleDayProvider);
+        WidgetService.updateWidgets(profile, phase, profile.lastInsight ?? "Log today to see your insight.", cycleDay);
+      }
     }
   }
 
@@ -138,49 +156,51 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       return const Scaffold(body: Center(child: Text("Profile not found")));
     }
 
-    // Dynamic cycle calculations
-    final currentDay = (DateTime.now().difference(profile.onboardingDate).inDays % profile.averageCycleLength) + 1;
-    final phase = CycleCalculator.getCurrentPhase(
-      profile.onboardingDate, 
-      profile.averageCycleLength, 
-      profile.averagePeriodLength
-    );
+    // Dynamic cycle calculations using global providers
+    final currentPhase = ref.watch(currentPhaseProvider);
+    final personalizedLength = ref.watch(personalizedCycleLengthProvider);
+    final currentDay = ref.watch(currentCycleDayProvider);
+
+    final phaseColor = AppColors.getPhaseColor(currentPhase);
 
     return Scaffold(
+      backgroundColor: phaseColor.withOpacity(0.05),
       appBar: AppBar(
-        title: const Text('Irma', style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold)),
+        title: Text(
+          "Irma's Wisdom",
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.analytics_outlined),
+            onPressed: () => Navigator.pushNamed(context, '/analytics'),
+          ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             onPressed: () => Navigator.pushNamed(context, '/settings'),
           ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Top: Cycle Ring
               CycleRing(
                 currentDayOfCycle: currentDay,
-                totalCycleLength: profile.averageCycleLength,
-                currentPhase: phase,
+                totalCycleLength: personalizedLength,
+                currentPhase: currentPhase,
               ),
               const SizedBox(height: 32),
 
               // Middle: AI Insight (The Insight Spark)
-              AppCard(
-                padding: EdgeInsets.zero,
-                border: Border.all(color: Colors.transparent),
-                borderRadius: 20,
-                child: Container(
-                  padding: const EdgeInsets.all(1.5), // The Gradient Border thickness
+              Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(24),
                     gradient: const LinearGradient(
                       colors: [AppColors.aiSparkStart, AppColors.aiSparkEnd],
                       begin: Alignment.topLeft,
@@ -190,55 +210,49 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       BoxShadow(
                         color: AppColors.aiSparkEnd.withOpacity(0.2),
                         blurRadius: 15,
-                        spreadRadius: 2,
+                        offset: const Offset(0, 8),
                       ),
                     ],
                   ),
+                  padding: const EdgeInsets.all(2), // Gradient border width
                   child: Container(
-                    padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(19),
+                      borderRadius: BorderRadius.circular(22),
                     ),
-                    child: Row(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.auto_awesome, color: AppColors.primary, size: 20),
+                        Row(
+                          children: [
+                             const Icon(Icons.auto_awesome, color: AppColors.primary, size: 20),
+                             const SizedBox(width: 8),
+                             Text(
+                               "Auntie's Observation",
+                               style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                 fontSize: 18,
+                                 color: AppColors.primary,
+                               ),
+                             ),
+                          ],
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Auntie Irma\'s Insight',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                  color: AppColors.primary,
-                                ),
+                        const SizedBox(height: 12),
+                        _isLoadingInsight 
+                          ? const LinearProgressIndicator(minHeight: 2, backgroundColor: AppColors.background)
+                          : Text(
+                              _aiInsight,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                height: 1.5,
+                                color: AppColors.textPrimary,
+                                fontStyle: FontStyle.italic,
                               ),
-                              const SizedBox(height: 8),
-                              _isLoadingInsight 
-                                ? const LinearProgressIndicator(minHeight: 2, backgroundColor: AppColors.background)
-                                : Text(
-                                    _aiInsight,
-                                    style: const TextStyle(fontSize: 15, height: 1.4, color: AppColors.textPrimary),
-                                  ),
-                            ],
-                          ),
-                        ),
+                            ),
                       ],
                     ),
                   ),
                 ),
-              ),
               // Dashboard Navigation Buttons
               Row(
                 children: [

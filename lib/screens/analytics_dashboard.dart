@@ -41,87 +41,122 @@ class AnalyticsDashboard extends ConsumerWidget {
       );
     }
 
+    // Determine current cycle phase for dynamic coloring via providers
+    final currentDayInCycle = ref.watch(currentCycleDayProvider);
+    final currentPhase = ref.watch(currentPhaseProvider);
+    final phaseColor = AppColors.getPhaseColor(currentPhase);
+
     return Scaffold(
+      backgroundColor: phaseColor.withOpacity(0.05),
       appBar: AppBar(
-        title: const Text('Advanced Analytics'),
+        title: Text(
+          'Trends & History',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontFamily: 'Lufga'),
+        ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Energy vs. Cycle Phase',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Your Cycle Intelligence',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: AppColors.textPrimary,
+                fontFamily: 'Lufga',
               ),
-              const SizedBox(height: 8),
-              const Text(
-                'Auntie Irma\'s multi-month view of your energy patterns.',
-                style: TextStyle(color: AppColors.textSecondary),
-              ),
-              const SizedBox(height: 24),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Auntie Irma\'s multi-month view of your energy patterns.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary, fontFamily: 'Inter'),
+            ),
+            const SizedBox(height: 24),
 
-              // Real Energy Chart
-              AppCard(
-                borderRadius: 24,
-                child: SizedBox(
-                  height: 250,
-                  child: LineChart(
-                    LineChartData(
-                      gridData: const FlGridData(show: false),
-                      titlesData: FlTitlesData(
-                        leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            interval: 7,
-                            getTitlesWidget: (value, meta) {
-                              return SideTitleWidget(
-                                axisSide: meta.axisSide,
-                                child: Text('Day ${value.toInt()}', style: const TextStyle(fontSize: 10, color: AppColors.textSecondary)),
-                              );
-                            },
-                          ),
+            // Real Energy Chart
+            AppCard(
+              borderRadius: 24,
+              child: SizedBox(
+                height: 250,
+                child: LineChart(
+                  LineChartData(
+                    gridData: const FlGridData(show: false),
+                    titlesData: FlTitlesData(
+                      leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          interval: 7,
+                          getTitlesWidget: (value, meta) {
+                            return SideTitleWidget(
+                              axisSide: meta.axisSide,
+                              child: Text('Day ${value.toInt()}', style: const TextStyle(fontSize: 10, color: AppColors.textSecondary, fontFamily: 'Inter')),
+                            );
+                          },
                         ),
                       ),
-                      borderData: FlBorderData(show: false),
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: _generateEnergySpots(logs, profile.onboardingDate, profile.averageCycleLength),
-                          isCurved: true,
-                          color: AppColors.primary,
-                          barWidth: 4,
-                          isStrokeCapRound: true,
-                          dotData: const FlDotData(show: true),
-                          belowBarData: BarAreaData(
-                            show: true,
-                            color: AppColors.primary.withOpacity(0.1),
-                          ),
-                        ),
-                      ],
                     ),
+                    borderData: FlBorderData(show: false),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: _generateEnergySpots(logs, profile.onboardingDate, profile.averageCycleLength),
+                        isCurved: true,
+                        color: phaseColor, // Use phase-based color
+                        barWidth: 4,
+                        isStrokeCapRound: true,
+                        dotData: FlDotData(show: true, color: phaseColor), // Use phase-based color for dots
+                        belowBarData: BarAreaData(
+                          show: true,
+                          color: phaseColor.withOpacity(0.1), // Use phase-based color
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
+            ),
 
-              const SizedBox(height: 48),
+            const SizedBox(height: 48),
 
-              const Text(
-                'Symptom Frequency',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+            Text(
+              'Symptom Frequency',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontSize: 18,
+                color: AppColors.textPrimary,
+                fontFamily: 'Lufga',
               ),
-              const SizedBox(height: 24),
+            ),
+            const SizedBox(height: 24),
 
-              // Real Symptom Bar Chart
-              AppCard(
-                borderRadius: 24,
-                child: SizedBox(
+            // Real Symptom Bar Chart
+            AppCard(
+              borderRadius: 24,
+              child: SizedBox(
+                height: 200,
+                child: BarChart(
+                  BarChartData(
+                    alignment: BarChartAlignment.spaceAround,
+                    maxY: logs.length.toDouble(),
+                    barTouchData: BarTouchData(enabled: true),
+                    titlesData: FlTitlesData(
+                      leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (double value, TitleMeta meta) {
+                            final symptomNames = ['Headache', 'Cramps', 'Fatigue', 'Bloating'];
+                            if (value.toInt() < symptomNames.length) {
+                              return SideTitleWidget(
+                                axisSide: meta.axisSide,
+                                child: Text(symptomNames[value.toInt()], style: const TextStyle(fontSize: 10, color: AppColors.textSecondary, fontFamily: 'Inter')),
+                              );
                   height: 200,
                   child: BarChart(
                     BarChartData(
@@ -167,7 +202,7 @@ class AnalyticsDashboard extends ConsumerWidget {
     final Map<int, List<int>> energyByDay = {};
 
     for (var log in logs) {
-      final cycleDay = (log.date.difference(onboardingDate).inDays % cycleLength) + 1;
+      final cycleDay = CycleCalculator.getCycleDayForDate(onboardingDate, log.date, cycleLength);
       energyByDay.putIfAbsent(cycleDay, () => []).add(log.energyLevel);
     }
 

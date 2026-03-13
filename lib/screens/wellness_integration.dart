@@ -4,15 +4,13 @@ import '../providers/app_state_providers.dart';
 import '../services/cycle_calculator.dart';
 import '../services/recommendation_service.dart';
 import '../models/recommendation.dart';
+import '../services/cycle_sync_manager.dart';
 import '../theme/app_colors.dart';
 import '../widgets/app_card.dart';
 
 class WellnessIntegration extends ConsumerWidget {
-  final String? currentPhase;
-
   const WellnessIntegration({
     super.key, 
-    this.currentPhase,
   });
 
   @override
@@ -23,18 +21,17 @@ class WellnessIntegration extends ConsumerWidget {
       return const Scaffold(body: Center(child: Text('Profile not found.')));
     }
 
-    final phase = currentPhase ?? CycleCalculator.getCurrentPhase(
-      profile.onboardingDate, 
-      profile.averageCycleLength, 
-      profile.averagePeriodLength
-    );
+    final phase = ref.watch(currentPhaseProvider);
 
     final recommendations = RecommendationService.getRecommendationsForPhase(phase);
     final themeColor = AppColors.getPhaseColor(phase);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cycle Syncing'),
+        title: Text(
+          'Cycle Syncing',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -51,7 +48,9 @@ class WellnessIntegration extends ConsumerWidget {
               children: [
                 Text(
                   'Wellness for your $phase',
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 const Text(
@@ -132,7 +131,10 @@ class WellnessIntegration extends ConsumerWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontSize: 18,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(

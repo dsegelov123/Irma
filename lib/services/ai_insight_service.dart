@@ -1,18 +1,19 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../models/daily_log.dart';
 import '../models/cycle_data.dart';
 
 class AIInsightService {
   // Mock endpoint for the Gemini API call
   static const String _geminiEndpoint = 'https://api.gemini.google.com/v1/generate';
-  static const String _apiKey = 'YOUR_GEMINI_API_KEY';
+  static final String _apiKey = dotenv.env['GEMINI_API_KEY'] ?? 'YOUR_GEMINI_API_KEY';
 
   /// Generates a prompt ensuring no PII is included, only quantitative data
   static String _buildAnonymizedPrompt(
     List<DailyLog> recentLogs,
     CycleData currentCycle,
     String currentPhase,
+    int cycleDay,
     bool isPremium,
   ) {
     final buffer = StringBuffer();
@@ -29,7 +30,7 @@ class AIInsightService {
     }
 
     buffer.writeln("\nCurrent Phase: $currentPhase");
-    buffer.writeln("Cycle Day: ${DateTime.now().difference(currentCycle.startDate).inDays + 1}");
+    buffer.writeln("Cycle Day: $cycleDay");
     
     buffer.writeln("\nRecent Activity Logs:");
     final logsToSend = recentLogs.take(7);
@@ -46,9 +47,10 @@ class AIInsightService {
     required List<DailyLog> recentLogs,
     required CycleData currentCycle,
     required String currentPhase,
+    required int cycleDay,
     required bool isPremium,
   }) async {
-    final prompt = _buildAnonymizedPrompt(recentLogs, currentCycle, currentPhase, isPremium);
+    final prompt = _buildAnonymizedPrompt(recentLogs, currentCycle, currentPhase, cycleDay, isPremium);
 
     try {
       // NOTE: In a production environment, this call should ideally happen on a secure backend

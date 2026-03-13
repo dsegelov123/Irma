@@ -5,19 +5,62 @@ class CycleCalculator {
   static const String ovulation = 'Ovulation Window';
   static const String luteal = 'Luteal Phase';
 
+  /// Detects period starts in history and calculates the average cycle length.
+  /// Logic: Look for the first day of "Period" clusters.
+  static int calculateAverageCycleLength(List<DailyLog> history, int defaultLength) {
+    if (history.length < 30) return defaultLength; // Need at least ~1 cycle of data
+
+    final periodStarts = <DateTime>[];
+    DateTime? lastDate;
+
+    // Sort history by date
+    final sortedLogs = List<DailyLog>.from(history)
+      ..sort((a, b) => a.date.compareTo(b.date));
+
+    for (var log in sortedLogs) {
+      final hasPeriod = log.symptoms.contains('Period');
+      if (hasPeriod) {
+        // If it's a new period start (more than 10 days since the last period day)
+        if (lastDate == null || log.date.difference(lastDate).inDays > 10) {
+          periodStarts.add(log.date);
+        }
+        lastDate = log.date;
+      }
+    }
+
+    if (periodStarts.length < 2) return defaultLength;
+
+    int totalDays = 0;
+    int intervals = 0;
+
+    for (int i = 1; i < periodStarts.length; i++) {
+      final gap = periodStarts[i].difference(periodStarts[i - 1]).inDays;
+      if (gap >= 20 && gap <= 45) { // Sanity check for realistic cycles
+        totalDays += gap;
+        intervals++;
+      }
+    }
+
+    return intervals > 0 ? (totalDays / intervals).round() : defaultLength;
+  }
+
   /// Calculate the current phase based on the start date of the last period
   /// and the user's average cycle length.
-  static String getCurrentPhase(DateTime lastPeriodStart, int averageCycleLength, int averagePeriodLength) {
-    final now = DateTime.now();
-    final difference = now.difference(lastPeriodStart).inDays;
+  static String getCurrentPhase(DateTime lastPeriodStart, int cycleLength, int periodLength, {DateTime? targetDate}) {
+    final date = targetDate ?? DateTime.now();
+    // Normalize dates to midnight for consistent day counting
+    final normalizedLastPeriodStart = DateTime(lastPeriodStart.year, lastPeriodStart.month, lastPeriodStart.day);
+    final normalizedTargetDate = DateTime(date.year, date.month, date.day);
+    
+    final difference = normalizedTargetDate.difference(normalizedLastPeriodStart).inDays;
     
     // Day of cycle is 1-indexed (e.g., the day period starts is Day 1)
-    final dayOfCycle = (difference % averageCycleLength) + 1;
+    final dayOfCycle = getCycleDayForDate(normalizedLastPeriodStart, normalizedTargetDate, cycleLength);
 
     // Approximate phase lengths based on scientific averages adapted to user's cycle length
      
     // 1. Menstrual Phase (Days 1 - averagePeriodLength)
-    if (dayOfCycle <= averagePeriodLength) {
+    if (dayOfCycle <= periodLength) {
       return menstrual;
     }
 
@@ -49,5 +92,13 @@ class CycleCalculator {
   /// Predict the start date of the next period
   static DateTime predictNextPeriod(DateTime lastPeriodStart, int averageCycleLength) {
     return lastPeriodStart.add(Duration(days: averageCycleLength));
+  }
+
+  /// Centralized logic for calculating day of cycle
+  static int getCycleDayForDate(DateTime lastPeriodStart, DateTime targetDate, int cycleLength) {
+    final anchor = DateTime(lastPeriodStart.year, lastPeriodStart.month, lastPeriodStart.day);
+    final target = DateTime(targetDate.year, targetDate.month, targetDate.day);
+    final difference = target.difference(anchor).inDays;
+    return (difference % cycleLength) + 1;
   }
 }

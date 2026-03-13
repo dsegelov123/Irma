@@ -13,10 +13,10 @@ class AppColors {
   static const Color primarySoft = Color(0xFFFFD3DC);
 
   // Phase Themed Colors
-  static const Color menstrual = Color(0xFFCFCDF6); // Lavender
-  static const Color follicular = Color(0xFFF6D4B8); // Peach/Mint
-  static const Color ovulation = Color(0xFFFF5E7E);  // Menstrual Pink (Primary)
-  static const Color luteal = Color(0xFFB4A8D3);    // Calming Purple
+  static const Color menstrual = Color(0xFFCFCDF6); // Nurturing, Quiet
+  static const Color follicular = Color(0xFFF6D4B8); // Energetic, Fresh
+  static const Color ovulation = Color(0xFFFF5E7E);  // Vibrant, Confident
+  static const Color luteal = Color(0xFFB4A8D3);    // Supportive, Soft
 
   // AI & Feedback
   static const Color aiSparkStart = Color(0xFFFF8CA0);
@@ -25,12 +25,16 @@ class AppColors {
   static Color getPhaseColor(String phase) {
     switch (phase.toLowerCase()) {
       case 'menstrual':
+      case 'menstrual phase':
         return menstrual;
       case 'follicular':
+      case 'follicular phase':
         return follicular;
       case 'ovulation':
+      case 'ovulation window':
         return ovulation;
       case 'luteal':
+      case 'luteal phase':
         return luteal;
       default:
         return luteal;

@@ -3,6 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/app_state_providers.dart';
 import '../models/user_profile.dart';
 import 'paywall_screen.dart';
+import '../theme/app_colors.dart';
+import '../widgets/app_card.dart';
+import '../services/health_sync_service.dart';
+import '../services/widget_service.dart';
+import '../services/feedback_service.dart';
+import '../services/notification_service.dart';
+import '../services/cycle_sync_manager.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -43,6 +51,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     await ref.read(userRepositoryProvider).saveUserProfile(profile);
     
+    final logs = ref.read(dailyLogsProvider);
+    final personalizedLength = CycleCalculator.calculateAverageCycleLength(logs, profile.averageCycleLength);
+    await NotificationService.rescheduleAllNotifications(profile, personalizedLength);
+
     // Refresh the provider state
     ref.read(userProfileProvider.notifier).state = profile;
 
@@ -52,6 +64,57 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       );
       Navigator.pop(context);
     }
+  }
+
+  Future<void> _launchURL(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    try {
+      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+        throw Exception('Could not launch $urlString');
+      }
+    } catch (e) {
+      debugPrint('Error launching URL: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Auntie couldn\'t open that page right now.')),
+        );
+      }
+    }
+  }
+
+  void _showFeedbackDialog() {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Share your thoughts'),
+        content: TextField(
+          controller: controller,
+          maxLines: 4,
+          decoration: const InputDecoration(
+            hintText: 'What\'s on your mind, love?',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () async {
+              if (controller.text.isNotEmpty) {
+                await FeedbackService.sendFeedback(controller.text, 'General');
+                if (mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Auntie has heard you. Thank you!')),
+                  );
+                }
+              }
+            },
+            child: const Text('Send'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -141,26 +204,127 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 48),
             ListTile(
-              leading: const Icon(Icons.share_outlined),
+              leading: const Icon(Icons.notifications_outlined, color: AppColors.primary),
+              title: const Text('Notifications'),
+              subtitle: const Text('Auntie\'s nudges, frequency, and privacy.'),
+              trailing: const Icon(Icons.chevron_right),
+              onPressed: () => Navigator.pushNamed(context, '/notifications'),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: const Icon(Icons.share_outlined, color: AppColors.primary),
               title: const Text('Partner Sharing'),
               subtitle: const Text('Optional: Manage what you share with your partner.'),
               trailing: const Icon(Icons.chevron_right),
               onPressed: () => Navigator.pushNamed(context, '/sharing'),
             ),
+            const SizedBox(height: 32),
+            const Text(
+              'Ecosystem',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: const Icon(Icons.favorite_outline, color: AppColors.primary),
+              title: const Text('Health Integration'),
+              subtitle: const Text('Sync Sleep & Steps for better insights.'),
+              trailing: const Icon(Icons.sync),
+              onPressed: () async {
+                final success = await HealthSyncService.requestPermissions();
+                if (success) {
+                   final syncManager = CycleSyncManager(ref as WidgetRef);
+                   await syncManager.syncWithHealth();
+                }
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(success ? 'Health permissions granted, love.' : 'Maybe next time!')),
+                  );
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.widgets_outlined, color: AppColors.primary),
+              title: const Text('Update Widgets'),
+              subtitle: const Text('Refresh your home screen insight.'),
+              onPressed: () async {
+                final logs = ref.read(dailyLogsProvider);
+                // Simple placeholder logic for widget update trigger
+                if (profile != null) {
+                  await WidgetService.updateWidgets(profile, 'Tracking...', 'Open Irma for today\'s wisdom.');
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Widgets refreshed!')),
+                    );
+                  }
+                }
+              },
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              'Privacy & Legal',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: const Icon(Icons.privacy_tip_outlined, color: AppColors.primary),
+              title: const Text('Privacy Center'),
+              subtitle: const Text('See how Auntie Irma guards your secrets.'),
+              trailing: const Icon(Icons.chevron_right),
+              onPressed: () => Navigator.pushNamed(context, '/privacy-center'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.description_outlined, color: AppColors.primary),
+              title: const Text('Terms of Service'),
+              trailing: const Icon(Icons.open_in_new, size: 16, color: Colors.grey),
+              onPressed: () => _launchURL('https://irma.app/terms'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.policy_outlined, color: AppColors.primary),
+              title: const Text('Privacy Policy'),
+              trailing: const Icon(Icons.open_in_new, size: 16, color: Colors.grey),
+              onPressed: () => _launchURL('https://irma.app/privacy'),
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              'Support',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: const Icon(Icons.chat_bubble_outline, color: AppColors.primary),
+              title: const Text('Send Feedback'),
+              subtitle: const Text('Auntie Irma is always listening.'),
+              trailing: const Icon(Icons.chevron_right),
+              onPressed: _showFeedbackDialog,
+            ),
+            ListTile(
+              leading: const Icon(Icons.help_outline, color: AppColors.primary),
+              title: const Text('Help Center'),
+              trailing: const Icon(Icons.open_in_new, size: 16, color: Colors.grey),
+              onPressed: () {},
+            ),
             const SizedBox(height: 48),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: FilledButton(
                 onPressed: _saveSettings,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFB4A8D3),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
                 child: const Text('Save Changes', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ),
+            const SizedBox(height: 24),
+            const Center(
+              child: Text(
+                'Irma v1.0.0 (Production Build)',
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+            ),
+            const SizedBox(height: 32),
           ],
         ),
       ),

@@ -42,3 +42,6 @@ app.*.map.json
 # But you may copy/paste this into your gitignore
 **/.cxx/
 **/CMakeLists.txt.user
+
+# Environment variables
+.env
