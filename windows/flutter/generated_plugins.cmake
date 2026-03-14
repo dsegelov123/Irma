@@ -3,6 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  app_links
+  local_auth_windows
   permission_handler_windows
   sentry_flutter
   share_plus

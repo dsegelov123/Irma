@@ -22,7 +22,7 @@ dependencies:
   intl: ^0.19.0
   
   # Data Visualization (Premium)
-  fl_chart: ^0.68.0
+  fl_chart: ^1.2.0
   
   # Subscription/Freemium
   purchases_flutter: ^9.14.0
@@ -40,12 +40,16 @@ dependencies:
   permission_handler: ^11.0.0
 
   # Typography (Phase 23)
-  google_fonts: ^6.2.1
+  google_fonts: ^8.0.2
 
   # Production Polish (Phase 21)
   flutter_dotenv: ^5.1.0
   url_launcher: ^6.2.5
   sentry_flutter: ^8.1.0
+  iconsax: ^0.0.8
+  supabase_flutter: ^2.12.0
+  google_generative_ai: ^0.4.7
+  local_auth: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -59,20 +63,4 @@ flutter:
 
   assets:
     - .env
-    - assets/fonts/
     - assets/images/
-
-  fonts:
-    - family: Lufga
-      fonts:
-        - asset: assets/fonts/LufgaRegular.ttf
-        - asset: assets/fonts/LufgaBold.ttf
-          weight: 700
-        - asset: assets/fonts/LufgaMedium.ttf
-          weight: 500
-        - asset: assets/fonts/LufgaSemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/LufgaLight.ttf
-          weight: 300
-        - asset: assets/fonts/LufgaThin.ttf
-          weight: 100

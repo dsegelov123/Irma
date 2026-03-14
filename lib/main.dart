@@ -4,29 +4,18 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'models/user_profile.dart';
-import 'models/daily_log.dart';
-import 'models/cycle_data.dart';
-import 'models/sharing_settings.dart';
-import 'models/notification_settings.dart';
-import 'theme/app_colors.dart';
-import 'providers/app_state_providers.dart';
-import 'screens/dashboard_screen.dart';
-import 'screens/onboarding_screen.dart';
-import 'screens/analytics_dashboard.dart';
-import 'screens/wellness_integration.dart';
-import 'screens/settings_screen.dart';
-import 'screens/sharing_settings_screen.dart';
-import 'screens/notification_settings_screen.dart';
-import 'screens/privacy_center_screen.dart';
-import 'screens/symptoms_screen.dart';
-import 'screens/tracker_screen.dart';
-import 'screens/calendar_screen.dart';
-import 'screens/chat_screen.dart';
-import 'screens/main_shell.dart';
-import 'services/notification_service.dart';
-import 'services/error_reporting_service.dart';
+import 'v3/screens/onboarding_screen.dart';
+import 'v3/screens/irma_app_shell.dart';
+import 'v3/widgets/irma_lock_screen.dart';
+import 'v3/services/irma_security_service.dart';
+import 'v3/theme/irma_theme.dart';
+import 'v3/models/irma_cycle_data.dart';
+import 'v3/models/irma_daily_log.dart';
+import 'v3/models/irma_partner.dart';
+import 'v3/providers/irma_state_providers.dart';
+import 'v3/screens/settings_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,92 +23,59 @@ void main() async {
   // Load environment variables
   await dotenv.load(fileName: ".env");
 
-  // Initialize Error Reporting (Sentry)
-  await ErrorReportingService.init();
-  
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL'] ?? '',
+    anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
+  );
+
   // Initialize Hive for local, privacy-first storage
   await Hive.initFlutter();
-  await NotificationService.init();
   
-  // Register Adapters
-  Hive.registerAdapter(UserProfileAdapter());
-  Hive.registerAdapter(DailyLogAdapter());
-  Hive.registerAdapter(CycleDataAdapter());
-  Hive.registerAdapter(SharingSettingsAdapter());
-  Hive.registerAdapter(NotificationSettingsAdapter());
-  Hive.registerAdapter(NotificationFrequencyAdapter());
+  // Register v3 Hive Adapters
+  Hive.registerAdapter(IrmaCycleDataAdapter());
+  Hive.registerAdapter(IrmaCyclePhaseAdapter());
+  Hive.registerAdapter(IrmaDailyLogAdapter());
+  Hive.registerAdapter(IrmaPartnerAdapter());
+  Hive.registerAdapter(PartnerStatusAdapter());
   
-  // Open Boxes
-  await Hive.openBox<UserProfile>('userProfileBox');
-  await Hive.openBox<DailyLog>('dailyLogBox');
-  await Hive.openBox<CycleData>('cycleDataBox');
+  // Open v3 Boxes
+  await Hive.openBox<IrmaCycleData>('irmaCycleBox');
+  await Hive.openBox<IrmaDailyLog>('irmaDailyLogBox');
+  await Hive.openBox<IrmaPartner>('irmaPartnerBox');
 
-  runApp(const ProviderScope(child: IrmaApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class IrmaApp extends ConsumerWidget {
-  const IrmaApp({super.key});
+// Renamed IrmaApp to MyApp and updated its structure
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userProfile = ref.watch(userProfileProvider);
-    final isInitialized = ref.watch(appInitializedProvider);
+    final isAuthenticated = ref.watch(irmaAuthenticatedProvider);
+    final lockEnabled = ref.watch(irmaLockEnabledProvider);
+    final cycleData = ref.watch(irmaCycleDataProvider);
+    
+    // Simple logic: if cycle data exists, user is onboarded
+    final isOnboarded = cycleData != null;
+
+    Widget home;
+    if (!isOnboarded) {
+      home = const IrmaOnboardingScreen();
+    } else if (lockEnabled && !isAuthenticated) {
+      home = const IrmaLockScreen();
+    } else {
+      home = const IrmaAppShell();
+    }
 
     return MaterialApp(
       title: 'Irma - Auntie\'s Wisdom',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFFF5E7E), // Menstrual Pink / Primary
-          surface: const Color(0xFFF7F6F6),
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-        textTheme: GoogleFonts.interTextTheme(
-          Theme.of(context).textTheme,
-        ).copyWith(
-          displayLarge: const TextStyle(
-            fontFamily: 'Lufga',
-            fontWeight: FontWeight.bold,
-            fontSize: 32, // Adjusting to match usual displayLarge size
-          ),
-          headlineMedium: const TextStyle(
-            fontFamily: 'Lufga',
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-          titleLarge: const TextStyle(
-            fontFamily: 'Lufga',
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          },
-        ),
-      ),
-      home: isInitialized.when(
-        data: (_) => userProfile == null ? const OnboardingScreen() : const MainShell(),
-        loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-        error: (err, stack) => Scaffold(body: Center(child: Text('Error: $err'))),
-      ),
-      routes: {
-        '/dashboard': (context) => const DashboardScreen(),
-        '/onboarding': (context) => const OnboardingScreen(),
-        '/analytics': (context) => const AnalyticsDashboard(),
-        '/wellness': (context) => const WellnessIntegration(),
-        '/settings': (context) => const SettingsScreen(),
-        '/sharing': (context) => const SharingSettingsScreen(),
-        '/notifications': (context) => const NotificationSettingsScreen(),
-        '/privacy-center': (context) => const PrivacyCenterScreen(),
-        '/symptoms': (context) => const SymptomsScreen(),
-        '/tracker': (context) => const TrackerScreen(),
-        '/calendar': (context) => const CalendarScreen(),
-        '/chat': (context) => const ChatScreen(),
-      },
+      theme: IrmaTheme.lightTheme,
+      home: home,
+      // Legacy routes disabled for v3 build
+      onGenerateRoute: (settings) => null, 
     );
   }
 }
