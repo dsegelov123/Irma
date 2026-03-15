@@ -4,7 +4,7 @@ import '../widgets/irma_bottom_nav.dart';
 import '../theme/irma_theme.dart';
 import 'dashboard_screen.dart';
 import 'cycle_screen.dart';
-import 'community_screen.dart';
+import 'irma_self_care_screen.dart';
 import 'insights_screen.dart';
 import 'symptoms_screen.dart';
 import 'chat_screen.dart';
@@ -35,7 +35,7 @@ class _IrmaAppShellState extends State<IrmaAppShell> {
             },
             children: const [
               IrmaDashboardScreen(),
-              IrmaCommunityScreen(),
+              IrmaSelfCareScreen(),
               IrmaCycleScreen(),
               IrmaChatScreen(),
               IrmaInsightsScreen(),
@@ -78,7 +78,7 @@ class _IrmaAppShellState extends State<IrmaAppShell> {
   String _getScreenTitle(int index) {
     switch (index) {
       case 0: return "Dashboard";
-      case 1: return "Community";
+      case 1: return "Self Care";
       case 2: return "My Cycle";
       case 3: return "Irma AI";
       case 4: return "Insights";

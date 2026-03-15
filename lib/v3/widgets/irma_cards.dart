@@ -23,7 +23,7 @@ class IrmaInsightCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: IrmaTheme.pureWhite,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(IrmaTheme.radiusCard),
         border: Border.all(color: IrmaTheme.borderLight, width: 1),
         boxShadow: [
           BoxShadow(
@@ -49,8 +49,8 @@ class IrmaInsightCard extends StatelessWidget {
             title,
             style: IrmaTheme.inter.copyWith(
               color: IrmaTheme.textSub,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
             ),
           ),
           const SizedBox(height: 4),
@@ -91,7 +91,7 @@ class IrmaDashboardCard extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: IrmaTheme.pureWhite,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(IrmaTheme.radiusCard),
           border: Border.all(color: IrmaTheme.borderLight),
           boxShadow: [
             BoxShadow(
@@ -113,7 +113,7 @@ class IrmaDashboardCard extends StatelessWidget {
                     Text(
                       title,
                       style: IrmaTheme.outfit.copyWith(
-                        fontSize: 18,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: IrmaTheme.textMain,
                       ),
@@ -123,7 +123,8 @@ class IrmaDashboardCard extends StatelessWidget {
                       Text(
                         subtitle!,
                         style: IrmaTheme.inter.copyWith(
-                          fontSize: 13,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
                           color: IrmaTheme.textSub,
                         ),
                       ),
@@ -137,6 +138,50 @@ class IrmaDashboardCard extends StatelessWidget {
             const SizedBox(height: 20),
             content,
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class IrmaProfileTile extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool destructive;
+
+  const IrmaProfileTile({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.onTap,
+    this.destructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 345,
+      height: 64,
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: IrmaTheme.pureWhite,
+        borderRadius: BorderRadius.circular(IrmaTheme.radiusTile),
+        border: Border.all(color: IrmaTheme.borderLight),
+      ),
+      child: Center(
+        child: ListTile(
+          leading: Icon(icon, color: destructive ? Colors.red : IrmaTheme.menstrual),
+          title: Text(
+            title,
+            style: IrmaTheme.inter.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: destructive ? Colors.red : IrmaTheme.textMain,
+            ),
+          ),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: IrmaTheme.textSub),
+          onTap: onTap,
         ),
       ),
     );

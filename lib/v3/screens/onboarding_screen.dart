@@ -108,7 +108,7 @@ class _IrmaOnboardingScreenState extends State<IrmaOnboardingScreen> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     gradient: IrmaTheme.primaryGradient,
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
                     boxShadow: [
                       BoxShadow(
                         color: IrmaTheme.menstrual.withOpacity(0.3),

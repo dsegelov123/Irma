@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:iconsax/iconsax.dart';
 import '../theme/irma_theme.dart';
 
@@ -15,13 +16,13 @@ class IrmaBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 280, // Slightly wider to ensure icons have room on all screen sizes
+      width: 248, // EXACT Gospel Dimension
       height: 64,
-      margin: const EdgeInsets.only(bottom: 30), // Float it above the bottom edge
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      margin: const EdgeInsets.only(bottom: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: IrmaTheme.pureWhite,
-        borderRadius: BorderRadius.circular(40),
+        color: IrmaTheme.pureWhite.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(40), // Gospel Radius
         boxShadow: [
           BoxShadow(
             color: IrmaTheme.pureBlack.withOpacity(0.08),
@@ -31,32 +32,42 @@ class IrmaBottomNav extends StatelessWidget {
         ],
         border: Border.all(color: IrmaTheme.borderLight, width: 1),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(0, Iconsax.home_2),
-          _buildNavItem(1, Iconsax.people),
-          _buildCenterItem(),
-          _buildNavItem(3, Iconsax.message_text),
-          _buildNavItem(4, Iconsax.book),
-        ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(40),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(0, Iconsax.home_2),
+              _buildNavItem(1, Iconsax.heart), // Self Care Icon
+              _buildCenterItem(),
+              _buildNavItem(3, Iconsax.message_text),
+              _buildNavItem(4, Iconsax.book),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildNavItem(int index, IconData icon) {
     final isSelected = currentIndex == index;
-    final labels = ["Home", "Community", "Cycle", "Chat", "Insights"];
+    final labels = ["Home", "Self Care", "Cycle", "Chat", "Insights"];
     return Semantics(
       label: labels[index],
       selected: isSelected,
       button: true,
       child: GestureDetector(
         onTap: () => onTap(index),
-        child: Icon(
-          icon,
-          color: isSelected ? IrmaTheme.menstrual : IrmaTheme.textSub,
-          size: 24,
+        child: Container(
+          width: isSelected ? 77 : 64, // Gospel Variant Widths
+          alignment: Alignment.center,
+          child: Icon(
+            icon,
+            color: isSelected ? IrmaTheme.menstrual : IrmaTheme.textSub,
+            size: 24,
+          ),
         ),
       ),
     );

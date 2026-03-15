@@ -7,8 +7,8 @@ import '../widgets/irma_cards.dart';
 import '../providers/irma_state_providers.dart';
 import '../services/irma_cycle_engine.dart';
 import '../models/irma_cycle_data.dart';
+import '../widgets/irma_buttons.dart';
 import 'symptoms_screen.dart';
-import 'partner_screen.dart';
 import 'settings_screen.dart';
 
 class IrmaDashboardScreen extends ConsumerWidget {
@@ -17,18 +17,12 @@ class IrmaDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cycleState = ref.watch(irmaCycleStateProvider);
-    final aiInsight = ref.watch(irmaAIInsightProvider);
     
     // Default fallback if no data yet (e.g. during dev or fresh install)
     final currentDay = cycleState?.currentDay ?? 1;
     final totalDays = cycleState?.totalDays ?? 28;
     final phase = cycleState?.phase ?? IrmaCyclePhase.menstrual;
     
-    final wisdom = aiInsight.when(
-      data: (data) => data,
-      loading: () => "Auntie is thinking...",
-      error: (err, _) => cycleState?.phaseDescription ?? "Auntie is reflecting on your data...",
-    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.only(top: 320, bottom: 120), // Padding for nav bars
@@ -44,9 +38,21 @@ class IrmaDashboardScreen extends ConsumerWidget {
             ),
           ),
           
+          const SizedBox(height: 32),
+
+          // 2. LOG PERIOD ACTION (Gospel Mandated)
+          Center(
+            child: IrmaPrimaryButton(
+              label: "Log Period",
+              onTap: () {
+                // Navigate to period logging screen
+              },
+            ),
+          ),
+          
           const SizedBox(height: 48),
 
-          // 2. INSIGHT CARDS (Horizontal Scroll)
+          // 3. INSIGHT CARDS (Gospel Daily Progress)
           Padding(
             padding: const EdgeInsets.only(left: 24),
             child: Text(
@@ -91,64 +97,12 @@ class IrmaDashboardScreen extends ConsumerWidget {
 
           const SizedBox(height: 48),
 
-          // 3. MENTAL WELLNESS / WISDOM CARD (Research-Driven)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: IrmaDashboardCard(
-              title: "Daily Wisdom",
-              subtitle: "Phase-specific mental wellness",
-              onTap: () {},
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    wisdom,
-                    style: IrmaTheme.inter.copyWith(
-                      color: IrmaTheme.textMain,
-                      height: 1.5,
-                      fontSize: 15,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      _buildMiniBadge("Energy: High", IrmaTheme.ovulation),
-                      const SizedBox(width: 8),
-                      _buildMiniBadge("Self-care: Social", IrmaTheme.follicular),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: IrmaDashboardCard(
-              title: "Partner Sync",
-              subtitle: "Connect with a partner",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const IrmaPartnerScreen()),
-                );
-              },
-              content: Text(
-                "Share your cycle with a partner for better support.",
-                style: IrmaTheme.inter.copyWith(color: IrmaTheme.textSub),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 24),
-
           // 4. SYMPTOMS QUICK LOG
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: IrmaDashboardCard(
-              title: "How are you feeling?",
+              title: "Log Symptoms",
+              subtitle: "How are you feeling?",
               onTap: () {
                 Navigator.push(
                   context,
@@ -176,21 +130,4 @@ class IrmaDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildMiniBadge(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        label,
-        style: IrmaTheme.inter.copyWith(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../theme/irma_theme.dart';
 import '../widgets/irma_nav_bar.dart';
+import '../widgets/irma_status_box.dart';
 import '../models/irma_partner.dart';
 import '../services/irma_partner_service.dart';
 
@@ -19,7 +20,7 @@ class IrmaPartnerScreen extends ConsumerWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(top: 140, bottom: 40, left: 24, right: 24),
+            padding: const EdgeInsets.only(top: 320, bottom: 40, left: 24, right: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -75,7 +76,7 @@ class IrmaPartnerScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(32),
           decoration: BoxDecoration(
             color: IrmaTheme.follicular.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(IrmaTheme.radiusCard),
             border: Border.all(color: IrmaTheme.follicular.withOpacity(0.2)),
           ),
           child: Column(
@@ -97,7 +98,7 @@ class IrmaPartnerScreen extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   decoration: BoxDecoration(
                     color: IrmaTheme.follicular,
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
                   ),
                   alignment: Alignment.center,
                   child: Text(
@@ -126,7 +127,7 @@ class IrmaPartnerScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(32),
           decoration: BoxDecoration(
             color: IrmaTheme.pureWhite,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(IrmaTheme.radiusCard),
             border: Border.all(color: IrmaTheme.borderLight),
             boxShadow: [
               BoxShadow(
@@ -180,7 +181,7 @@ class IrmaPartnerScreen extends ConsumerWidget {
         const SizedBox(height: 24),
         
         // STATUS BOX (Gospel Style)
-        _buildStatusBox(
+        IrmaStatusBox(
           label: "Waiting for ${partner.name} to connect...",
           color: IrmaTheme.ovulation,
           status: "Pending",
@@ -203,7 +204,7 @@ class IrmaPartnerScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(32),
           decoration: BoxDecoration(
             color: IrmaTheme.pureWhite,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(IrmaTheme.radiusCard),
             border: Border.all(color: IrmaTheme.borderLight),
           ),
           child: Row(
@@ -242,7 +243,7 @@ class IrmaPartnerScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 24),
         
-        _buildStatusBox(
+        IrmaStatusBox(
           label: "Your cycle data is being shared",
           color: IrmaTheme.luteal,
           status: "Connected",
@@ -257,48 +258,6 @@ class IrmaPartnerScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatusBox({required String label, required Color color, required String status}) {
-    return Container(
-      width: 345,
-      height: 74,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                status,
-                style: IrmaTheme.outfit.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-              ),
-            ],
-          ),
-          Text(
-            label,
-            style: IrmaTheme.inter.copyWith(
-              fontSize: 13,
-              color: IrmaTheme.textSub,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   void _showAddPartnerDialog(BuildContext context, WidgetRef ref) {
     final controller = TextEditingController();

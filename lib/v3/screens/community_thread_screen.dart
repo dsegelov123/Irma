@@ -15,7 +15,7 @@ class IrmaCommunityThreadScreen extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(top: 140, bottom: 120),
+            padding: const EdgeInsets.only(top: 320, bottom: 120),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -140,7 +140,7 @@ class IrmaCommunityThreadScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: IrmaTheme.borderLight.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(IrmaTheme.radiusCardSmall),
       ),
       child: Row(
         children: [
@@ -208,7 +208,7 @@ class IrmaCommunityThreadScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: IrmaTheme.borderLight.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
               ),
               child: TextField(
                 decoration: InputDecoration(

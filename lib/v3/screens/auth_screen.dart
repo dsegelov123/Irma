@@ -130,7 +130,7 @@ class _IrmaAuthScreenState extends ConsumerState<IrmaAuthScreen> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     gradient: IrmaTheme.primaryGradient,
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
                     boxShadow: _isLoading ? null : [
                       BoxShadow(
                         color: IrmaTheme.menstrual.withOpacity(0.3),

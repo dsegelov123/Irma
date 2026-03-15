@@ -14,6 +14,7 @@ import 'v3/theme/irma_theme.dart';
 import 'v3/models/irma_cycle_data.dart';
 import 'v3/models/irma_daily_log.dart';
 import 'v3/models/irma_partner.dart';
+import 'v3/models/irma_user.dart';
 import 'v3/providers/irma_state_providers.dart';
 import 'v3/screens/settings_screen.dart';
 
@@ -38,11 +39,13 @@ void main() async {
   Hive.registerAdapter(IrmaDailyLogAdapter());
   Hive.registerAdapter(IrmaPartnerAdapter());
   Hive.registerAdapter(PartnerStatusAdapter());
+  Hive.registerAdapter(IrmaUserAdapter());
   
   // Open v3 Boxes
   await Hive.openBox<IrmaCycleData>('irmaCycleBox');
   await Hive.openBox<IrmaDailyLog>('irmaDailyLogBox');
   await Hive.openBox<IrmaPartner>('irmaPartnerBox');
+  await Hive.openBox<IrmaUser>('irmaUserBox');
 
   runApp(const ProviderScope(child: MyApp()));
 }

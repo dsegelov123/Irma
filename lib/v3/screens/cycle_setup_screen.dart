@@ -76,7 +76,7 @@ class _IrmaCycleSetupScreenState extends ConsumerState<IrmaCycleSetupScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
                   border: Border.all(color: IrmaTheme.borderLight),
                 ),
                 alignment: Alignment.centerLeft,
@@ -155,7 +155,7 @@ class _IrmaCycleSetupScreenState extends ConsumerState<IrmaCycleSetupScreen> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: IrmaTheme.primaryGradient,
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
                 ),
                 alignment: Alignment.center,
                 child: Text(

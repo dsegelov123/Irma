@@ -34,8 +34,11 @@ class IrmaTextField extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: IrmaTheme.pureWhite,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: IrmaTheme.borderLight, width: 1.5),
+            borderRadius: BorderRadius.circular(IrmaTheme.radiusAction), // 24px Gospel Radius for Inputs
+            border: Border.all(
+              color: IrmaTheme.borderLight,
+              width: 1.5,
+            ),
             boxShadow: [
               BoxShadow(
                 color: IrmaTheme.pureBlack.withOpacity(0.03),

@@ -25,11 +25,11 @@ class _IrmaMonthCalendarState extends State<IrmaMonthCalendar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 345, // Gospel-ish width
-      padding: const EdgeInsets.all(24),
+      width: 345, // Gospel Standard Width
+      padding: const EdgeInsets.all(24), // Increased padding for 345px width
       decoration: BoxDecoration(
         color: IrmaTheme.pureWhite,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(IrmaTheme.radiusCard), // Gospel Standard Radius
         border: Border.all(color: IrmaTheme.borderLight),
         boxShadow: [
           BoxShadow(
@@ -126,9 +126,13 @@ class _IrmaMonthCalendarState extends State<IrmaMonthCalendar> {
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: isSelected ? IrmaTheme.textMain : phaseColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: isSelected ? null : Border.all(color: phaseColor.withOpacity(0.3)),
+              color: isSelected ? IrmaTheme.textMain : (phaseColor != Colors.transparent ? phaseColor.withOpacity(0.1) : Colors.transparent),
+              borderRadius: BorderRadius.circular(IrmaTheme.radiusTile), // Gospel Rule: Rounded but not pill for grid cells
+              border: isSelected 
+                ? null 
+                : (phaseColor != Colors.transparent 
+                    ? Border.all(color: phaseColor.withOpacity(0.3)) 
+                    : Border.all(color: IrmaTheme.borderLight.withOpacity(0.5))),
             ),
             child: Text(
               day.toString(),
@@ -150,6 +154,7 @@ class _IrmaMonthCalendarState extends State<IrmaMonthCalendar> {
       case IrmaCyclePhase.follicular: return IrmaTheme.follicular;
       case IrmaCyclePhase.ovulation: return IrmaTheme.ovulation;
       case IrmaCyclePhase.luteal: return IrmaTheme.luteal;
+      default: return Colors.transparent;
     }
   }
 

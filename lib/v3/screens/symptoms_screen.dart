@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import '../theme/irma_theme.dart';
 import '../widgets/irma_nav_bar.dart';
 import '../widgets/irma_symptom_card.dart';
+import '../widgets/irma_buttons.dart';
 import '../models/irma_daily_log.dart';
 import '../providers/irma_state_providers.dart';
 
@@ -22,7 +23,7 @@ class IrmaSymptomsScreen extends ConsumerWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(top: 140, bottom: 40, left: 24, right: 24),
+            padding: const EdgeInsets.only(top: 320, bottom: 40, left: 24, right: 24),
             child: Column(
               children: [
                 IrmaSymptomCard(
@@ -33,7 +34,7 @@ class IrmaSymptomsScreen extends ConsumerWidget {
                   isEmpty: log?.symptoms.isEmpty ?? true,
                   onTap: () => _showSymptomsPicker(context, ref, log),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 32), // Gospel Gap rule for Symptoms
                 IrmaSymptomCard(
                   title: "Water Intake",
                   value: log?.waterLiters != null ? "${log!.waterLiters} L" : null,
@@ -42,7 +43,7 @@ class IrmaSymptomsScreen extends ConsumerWidget {
                   isEmpty: log?.waterLiters == null,
                   onTap: () => _showWaterPicker(context, ref, log),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
                 IrmaSymptomCard(
                   title: "Weight",
                   value: log?.weightKg != null ? "${log!.weightKg} Kg" : null,
@@ -51,7 +52,7 @@ class IrmaSymptomsScreen extends ConsumerWidget {
                   isEmpty: log?.weightKg == null,
                   onTap: () => _showWeightPicker(context, ref, log),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
                 IrmaSymptomCard(
                   title: "Notes",
                   value: log?.note,
@@ -83,36 +84,52 @@ class IrmaSymptomsScreen extends ConsumerWidget {
 
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(32))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(IrmaTheme.radiusCard))), // Gospel Modal Rule
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => Container(
           padding: const EdgeInsets.all(32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Select Symptoms", style: IrmaTheme.outfit.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text("Select Symptoms", style: IrmaTheme.outfit.copyWith(fontSize: 22, fontWeight: FontWeight.bold)),
               const SizedBox(height: 24),
               Wrap(
                 spacing: 12,
                 runSpacing: 12,
                 children: options.map((symptom) {
                   final isSelected = currentSymptoms.contains(symptom);
-                  return FilterChip(
-                    label: Text(symptom),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      if (selected) {
-                        currentSymptoms.add(symptom);
-                      } else {
-                        currentSymptoms.remove(symptom);
-                      }
-                      ref.read(irmaDailyLogProvider(date).notifier).updateLog(symptoms: currentSymptoms);
-                      setModalState(() {});
-                    },
+                  return Theme(
+                    data: Theme.of(context).copyWith(
+                      chipTheme: ChipThemeData(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(IrmaTheme.radiusCard)), // Gospel Pill Rule
+                        side: BorderSide.none,
+                        backgroundColor: IrmaTheme.pureWhite,
+                        selectedColor: IrmaTheme.menstrual.withOpacity(0.1),
+                        labelStyle: IrmaTheme.inter.copyWith(fontSize: 12, fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                    child: FilterChip(
+                      label: Text(symptom),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        if (selected) {
+                          currentSymptoms.add(symptom);
+                        } else {
+                          currentSymptoms.remove(symptom);
+                        }
+                        ref.read(irmaDailyLogProvider(date).notifier).updateLog(symptoms: currentSymptoms);
+                        setModalState(() {});
+                      },
+                    ),
                   );
                 }).toList(),
               ),
               const SizedBox(height: 32),
+              IrmaPrimaryButton(
+                label: "Save Symptoms",
+                onTap: () => Navigator.pop(context),
+              ),
+              const SizedBox(height: 16),
             ],
           ),
         ),

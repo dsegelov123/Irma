@@ -97,7 +97,7 @@ class IrmaAuthSelectionScreen extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           gradient: IrmaTheme.primaryGradient,
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
         ),
         alignment: Alignment.center,
         child: Text(
@@ -120,7 +120,7 @@ class IrmaAuthSelectionScreen extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           color: IrmaTheme.pureWhite,
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
           border: Border.all(color: IrmaTheme.borderLight, width: 2),
         ),
         alignment: Alignment.center,

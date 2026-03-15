@@ -14,7 +14,7 @@ class IrmaInsightsScreen extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(top: 140, bottom: 120, left: 24, right: 24),
+            padding: const EdgeInsets.only(top: 320, bottom: 120, left: 24, right: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -143,7 +143,7 @@ class IrmaInsightsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: IrmaTheme.pureWhite,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(IrmaTheme.radiusCard),
         border: Border.all(color: IrmaTheme.borderLight),
       ),
       child: Column(

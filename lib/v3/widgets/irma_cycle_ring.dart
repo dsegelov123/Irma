@@ -129,7 +129,7 @@ class _CycleRingPainter extends CustomPainter {
 
     // PROGRESS ARC
     final progressPaint = Paint()
-      ..color = color
+      ..shader = IrmaTheme.primaryGradient.createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;

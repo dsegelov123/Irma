@@ -40,14 +40,21 @@ class IrmaCycleScreen extends ConsumerWidget {
           const SizedBox(height: 32),
 
           // 2. LEGEND / INFO
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+          Center(
             child: Container(
+              width: 345, // Gospel Standard Width
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: IrmaTheme.pureWhite,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(IrmaTheme.radiusCard), // Gospel Standard Radius
                 border: Border.all(color: IrmaTheme.borderLight),
+                boxShadow: [
+                  BoxShadow(
+                    color: IrmaTheme.pureBlack.withOpacity(0.04),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,15 +64,16 @@ class IrmaCycleScreen extends ConsumerWidget {
                     style: IrmaTheme.outfit.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: IrmaTheme.textMain,
                     ),
                   ),
                   const SizedBox(height: 16),
                   _buildLegendItem("Menstrual", IrmaTheme.menstrual),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   _buildLegendItem("Follicular", IrmaTheme.follicular),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   _buildLegendItem("Ovulation", IrmaTheme.ovulation),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   _buildLegendItem("Luteal", IrmaTheme.luteal),
                 ],
               ),

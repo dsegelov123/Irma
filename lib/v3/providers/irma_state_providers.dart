@@ -5,6 +5,7 @@ import '../models/irma_daily_log.dart';
 import '../services/irma_cycle_engine.dart';
 import '../services/irma_supabase_service.dart';
 import '../services/irma_ai_service.dart';
+import '../models/irma_user.dart';
 
 // Provider to access the Hive box for Cycle Data
 final irmaCycleBoxProvider = Provider<Box<IrmaCycleData>>((ref) {
@@ -17,6 +18,40 @@ final irmaCycleDataProvider = StateNotifierProvider<IrmaCycleDataNotifier, IrmaC
   final supabase = ref.watch(supabaseServiceProvider);
   return IrmaCycleDataNotifier(box, supabase);
 });
+
+// --- USER PROFILE ---
+
+final irmaUserBoxProvider = Provider<Box<IrmaUser>>((ref) {
+  return Hive.box<IrmaUser>('irmaUserBox');
+});
+
+final irmaUserProvider = StateNotifierProvider<IrmaUserNotifier, IrmaUser?>((ref) {
+  final box = ref.watch(irmaUserBoxProvider);
+  return IrmaUserNotifier(box);
+});
+
+class IrmaUserNotifier extends StateNotifier<IrmaUser?> {
+  final Box<IrmaUser> _box;
+
+  IrmaUserNotifier(this._box) : super(null) {
+    _loadData();
+  }
+
+  void _loadData() {
+    if (_box.isNotEmpty) {
+      state = _box.getAt(0);
+    } else {
+      // Initialize with default if empty
+      state = IrmaUser(name: "Jane Doe");
+    }
+  }
+
+  Future<void> updateProfile(IrmaUser newUser) async {
+    await _box.clear();
+    await _box.add(newUser);
+    state = newUser;
+  }
+}
 
 class IrmaCycleDataNotifier extends StateNotifier<IrmaCycleData?> {
   final Box<IrmaCycleData> _box;
@@ -49,6 +84,13 @@ final irmaCycleStateProvider = Provider<IrmaCycleState?>((ref) {
 
   return IrmaCycleEngine.calculateState(cycleData, DateTime.now());
 });
+
+// --- NOTIFICATIONS ---
+
+final irmaPeriodRemindersProvider = StateProvider<bool>((ref) => true);
+final irmaSymptomLogsProvider = StateProvider<bool>((ref) => true);
+final irmaAIInsightsNotificationsProvider = StateProvider<bool>((ref) => false);
+final irmaCommunityAlertsProvider = StateProvider<bool>((ref) => false);
 
 // --- DAILY LOGS ---
 

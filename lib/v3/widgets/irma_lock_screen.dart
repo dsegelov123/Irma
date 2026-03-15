@@ -49,7 +49,7 @@ class IrmaLockScreen extends ConsumerWidget {
                     height: 56,
                     decoration: BoxDecoration(
                       color: IrmaTheme.pureWhite,
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
                     ),
                     alignment: Alignment.center,
                     child: Text(

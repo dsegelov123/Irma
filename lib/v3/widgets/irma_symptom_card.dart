@@ -26,10 +26,10 @@ class IrmaSymptomCard extends StatelessWidget {
       child: Container(
         width: 345,
         height: 124,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16), // Gospel Padding 16
         decoration: BoxDecoration(
           color: IrmaTheme.pureWhite,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(IrmaTheme.radiusCardMedium), // Gospel Rule for Symptom Cards
           border: Border.all(color: IrmaTheme.borderLight),
           boxShadow: [
             BoxShadow(
@@ -67,13 +67,13 @@ class IrmaSymptomCard extends StatelessWidget {
                       color: IrmaTheme.textMain,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 1), // Tight Gospel spacing
                   Text(
                     isEmpty ? "Tap to log" : (value ?? ""),
                     style: IrmaTheme.inter.copyWith(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: isEmpty ? IrmaTheme.textSub : baseColor,
-                      fontWeight: isEmpty ? FontWeight.normal : FontWeight.bold,
+                      fontWeight: isEmpty ? FontWeight.w400 : FontWeight.bold,
                     ),
                   ),
                 ],

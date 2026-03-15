@@ -75,7 +75,7 @@ class _IrmaIdentityScreenState extends State<IrmaIdentityScreen> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: IrmaTheme.primaryGradient,
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
                 ),
                 alignment: Alignment.center,
                 child: Text(
