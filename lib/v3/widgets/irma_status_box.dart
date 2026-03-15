@@ -31,27 +31,19 @@ class IrmaStatusBox extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                status.toUpperCase(),
-                style: IrmaTheme.outfit.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-              ),
-            ],
+          Text(
+            status.toUpperCase(),
+            style: IrmaTheme.outfit.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
+          const SizedBox(height: 8), // Gospel Gap
           Text(
             label,
             style: IrmaTheme.inter.copyWith(

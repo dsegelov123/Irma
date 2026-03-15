@@ -3,6 +3,7 @@ import 'package:iconsax/iconsax.dart';
 import '../theme/irma_theme.dart';
 import '../widgets/irma_nav_bar.dart';
 import '../widgets/irma_exercise_player.dart';
+import '../widgets/irma_buttons.dart';
 
 class IrmaProgram {
   final String id;
@@ -42,7 +43,7 @@ class IrmaProgramDetailsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 120), // Spacing for navbar
+                const SizedBox(height: 80), // Spacing for navbar (Gospel Standard)
                 
                 // PROGRAM ICON & HEADER
                 Center(
@@ -141,51 +142,22 @@ class IrmaProgramDetailsScreen extends StatelessWidget {
             ),
           ),
 
-          // 2. FIXED BOTTOM BUTTON ("Let's Start")
           Positioned(
             bottom: 40,
             left: 24,
             right: 24,
-            child: Container(
-              height: 56,
-              decoration: BoxDecoration(
-                gradient: IrmaTheme.primaryGradient,
-                borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-                boxShadow: [
-                  BoxShadow(
-                    color: IrmaTheme.menstrual.withOpacity(0.3),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => IrmaExercisePlayer(
-                        programTitle: program.title,
-                      ),
+            child: IrmaPrimaryButton(
+              label: "Let's Start",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => IrmaExercisePlayer(
+                      programTitle: program.title,
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
                   ),
-                ),
-                child: Text(
-                  "Let's Start",
-                  style: IrmaTheme.outfit.copyWith(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: IrmaTheme.pureWhite,
-                  ),
-                ),
-              ),
+                );
+              },
             ),
           ),
 

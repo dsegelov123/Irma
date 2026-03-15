@@ -13,7 +13,7 @@ class IrmaCycleScreen extends ConsumerWidget {
     final cycleData = ref.watch(irmaCycleDataProvider);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(top: 320, bottom: 120),
+      padding: const EdgeInsets.only(top: 80, bottom: 120),
       child: Column(
         children: [
           // 1. MONTH CALENDAR

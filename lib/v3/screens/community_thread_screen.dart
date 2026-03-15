@@ -15,7 +15,7 @@ class IrmaCommunityThreadScreen extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(top: 320, bottom: 120),
+            padding: const EdgeInsets.only(top: 80, bottom: 120),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

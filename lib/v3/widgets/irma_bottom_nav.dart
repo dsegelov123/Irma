@@ -37,13 +37,14 @@ class IrmaBottomNav extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildNavItem(0, Iconsax.home_2),
-              _buildNavItem(1, Iconsax.heart), // Self Care Icon
+              _buildNavItem(0, Iconsax.home_2, "Cycle"),
+              const SizedBox(width: 8),
               _buildCenterItem(),
-              _buildNavItem(3, Iconsax.message_text),
-              _buildNavItem(4, Iconsax.book),
+              const SizedBox(width: 8),
+              _buildNavItem(2, Iconsax.chart_2, "Insights"),
             ],
           ),
         ),
@@ -51,11 +52,10 @@ class IrmaBottomNav extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon) {
+  Widget _buildNavItem(int index, IconData icon, String label) {
     final isSelected = currentIndex == index;
-    final labels = ["Home", "Self Care", "Cycle", "Chat", "Insights"];
     return Semantics(
-      label: labels[index],
+      label: label,
       selected: isSelected,
       button: true,
       child: GestureDetector(
@@ -78,7 +78,7 @@ class IrmaBottomNav extends StatelessWidget {
       label: "Cycle Tracking",
       button: true,
       child: GestureDetector(
-        onTap: () => onTap(2),
+        onTap: () => onTap(1), // Index 1 is AI/Center
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: const BoxDecoration(

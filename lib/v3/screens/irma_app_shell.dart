@@ -35,8 +35,6 @@ class _IrmaAppShellState extends State<IrmaAppShell> {
             },
             children: const [
               IrmaDashboardScreen(),
-              IrmaSelfCareScreen(),
-              IrmaCycleScreen(),
               IrmaChatScreen(),
               IrmaInsightsScreen(),
             ],
@@ -78,10 +76,8 @@ class _IrmaAppShellState extends State<IrmaAppShell> {
   String _getScreenTitle(int index) {
     switch (index) {
       case 0: return "Dashboard";
-      case 1: return "Self Care";
-      case 2: return "My Cycle";
-      case 3: return "Irma AI";
-      case 4: return "Insights";
+      case 1: return "Irma AI";
+      case 2: return "Insights";
       default: return "Irma";
     }
   }

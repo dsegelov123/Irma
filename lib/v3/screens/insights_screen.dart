@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:iconsax/iconsax.dart';
 import '../theme/irma_theme.dart';
 import '../widgets/irma_nav_bar.dart';
+import '../widgets/irma_cards.dart';
 
 class IrmaInsightsScreen extends StatelessWidget {
   const IrmaInsightsScreen({super.key});
@@ -14,7 +15,7 @@ class IrmaInsightsScreen extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(top: 320, bottom: 120, left: 24, right: 24),
+            padding: const EdgeInsets.only(top: 80, bottom: 120, left: 24, right: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -125,38 +126,35 @@ class IrmaInsightsScreen extends StatelessWidget {
   }
 
   Widget _buildRegularityMetrics() {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildMetricTile("Avg. Cycle", "29 Days", Iconsax.timer_1, IrmaTheme.follicular),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildMetricTile("Variation", "± 2 Days", Iconsax.activity, IrmaTheme.luteal),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMetricTile(String label, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: IrmaTheme.pureWhite,
-        borderRadius: BorderRadius.circular(IrmaTheme.radiusCard),
-        border: Border.all(color: IrmaTheme.borderLight),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
         children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 16),
-          Text(value, style: IrmaTheme.outfit.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
-          Text(label, style: IrmaTheme.inter.copyWith(color: IrmaTheme.textSub, fontSize: 13)),
+          IrmaInsightCard(
+            title: "Avg. Cycle",
+            value: "29 Days",
+            icon: Iconsax.timer_1,
+            baseColor: IrmaTheme.follicular,
+          ),
+          const SizedBox(width: 16),
+          IrmaInsightCard(
+            title: "Variation",
+            value: "± 2 Days",
+            icon: Iconsax.activity,
+            baseColor: IrmaTheme.luteal,
+          ),
+          const SizedBox(width: 16),
+          IrmaInsightCard(
+            title: "Period",
+            value: "5 Days",
+            icon: Iconsax.flash_1,
+            baseColor: IrmaTheme.menstrual,
+          ),
         ],
       ),
     );
   }
+
 
   Widget _buildPhaseDistribution() {
     return Container(

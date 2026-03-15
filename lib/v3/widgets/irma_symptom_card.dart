@@ -26,10 +26,10 @@ class IrmaSymptomCard extends StatelessWidget {
       child: Container(
         width: 345,
         height: 124,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16), // Gospel Padding 16
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: IrmaTheme.pureWhite,
-          borderRadius: BorderRadius.circular(IrmaTheme.radiusCardMedium), // Gospel Rule for Symptom Cards
+          borderRadius: BorderRadius.circular(IrmaTheme.radiusCardMedium),
           border: Border.all(color: IrmaTheme.borderLight),
           boxShadow: [
             BoxShadow(
@@ -39,52 +39,51 @@ class IrmaSymptomCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ICON BOX
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: baseColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(icon, color: baseColor, size: 28),
-            ),
-            const SizedBox(width: 20),
-
-            // CONTENT
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: IrmaTheme.outfit.copyWith(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: IrmaTheme.textMain,
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: baseColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  const SizedBox(height: 1), // Tight Gospel spacing
-                  Text(
-                    isEmpty ? "Tap to log" : (value ?? ""),
-                    style: IrmaTheme.inter.copyWith(
-                      fontSize: 12,
-                      color: isEmpty ? IrmaTheme.textSub : baseColor,
-                      fontWeight: isEmpty ? FontWeight.w400 : FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+                  child: Icon(icon, color: baseColor, size: 28),
+                ),
+                Icon(
+                  isEmpty ? Icons.add_circle_outline : Icons.check_circle,
+                  color: isEmpty ? IrmaTheme.borderLight : baseColor,
+                  size: 24,
+                ),
+              ],
             ),
-
-            // ACTION ICON
-            Icon(
-              isEmpty ? Icons.add_circle_outline : Icons.check_circle,
-              color: isEmpty ? IrmaTheme.borderLight : baseColor,
-              size: 24,
+            const SizedBox(height: 32),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: IrmaTheme.outfit.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: IrmaTheme.textMain,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  isEmpty ? "Tap to log" : (value ?? ""),
+                  style: IrmaTheme.inter.copyWith(
+                    fontSize: 14,
+                    color: isEmpty ? IrmaTheme.textSub : baseColor,
+                    fontWeight: isEmpty ? FontWeight.w400 : FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

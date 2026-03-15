@@ -18,11 +18,8 @@ class IrmaNotificationsScreen extends ConsumerWidget {
     return Scaffold(
       body: Stack(
         children: [
-          const IrmaNavigationBar(title: 'Notifications', showBackButton: true),
-          Padding(
-            padding: const EdgeInsets.only(top: 287), // Immersive header height
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(IrmaTheme.margin),
+          SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 80, 24, 40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -65,6 +62,12 @@ class IrmaNotificationsScreen extends ConsumerWidget {
                 ],
               ),
             ),
+          // TOP NAV
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: IrmaNavigationBar(title: 'Notifications', showBackButton: true),
           ),
         ],
       ),

@@ -3,6 +3,7 @@ import '../theme/irma_theme.dart';
 import '../widgets/irma_nav_bar.dart';
 import '../widgets/irma_text_field.dart';
 import 'goals_screen.dart';
+import '../widgets/irma_buttons.dart';
 
 class IrmaIdentityScreen extends StatefulWidget {
   const IrmaIdentityScreen({super.key});
@@ -25,7 +26,7 @@ class _IrmaIdentityScreenState extends State<IrmaIdentityScreen> {
         showBackButton: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 320, 24, 24),
+        padding: const EdgeInsets.fromLTRB(24, 80, 24, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -62,31 +63,14 @@ class _IrmaIdentityScreenState extends State<IrmaIdentityScreen> {
 
             const SizedBox(height: 48),
 
-            // CONTINUE BUTTON
-            GestureDetector(
+            IrmaPrimaryButton(
+              label: "Continue",
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const IrmaGoalsScreen()),
                 );
               },
-              child: Container(
-                height: 56,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: IrmaTheme.primaryGradient,
-                  borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  "Continue",
-                  style: IrmaTheme.outfit.copyWith(
-                    color: IrmaTheme.pureWhite,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
             ),
           ],
         ),

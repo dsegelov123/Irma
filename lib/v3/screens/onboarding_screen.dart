@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/irma_theme.dart';
+import '../widgets/irma_buttons.dart';
 import 'auth_selection_screen.dart';
 
 class IrmaOnboardingScreen extends StatefulWidget {
@@ -89,10 +90,11 @@ class _IrmaOnboardingScreenState extends State<IrmaOnboardingScreen> {
 
             const SizedBox(height: 40),
 
-            // PRIMARY BUTTON
+            // PRIMARY BUTTON (Gospel Rectified)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: GestureDetector(
+              child: IrmaPrimaryButton(
+                label: _currentPage == _slides.length - 1 ? "Get Started" : "Next",
                 onTap: () {
                   if (_currentPage < _slides.length - 1) {
                     _pageController.nextPage(
@@ -103,30 +105,6 @@ class _IrmaOnboardingScreenState extends State<IrmaOnboardingScreen> {
                     _navigateToAuth();
                   }
                 },
-                child: Container(
-                  height: 56,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: IrmaTheme.primaryGradient,
-                    borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-                    boxShadow: [
-                      BoxShadow(
-                        color: IrmaTheme.menstrual.withOpacity(0.3),
-                        blurRadius: 15,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    _currentPage == _slides.length - 1 ? "Get Started" : "Next",
-                    style: IrmaTheme.outfit.copyWith(
-                      color: IrmaTheme.pureWhite,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
               ),
             ),
             

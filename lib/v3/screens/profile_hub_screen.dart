@@ -20,11 +20,9 @@ class IrmaProfileHubScreen extends ConsumerWidget {
     return Scaffold(
       body: Stack(
         children: [
-          const IrmaNavigationBar(title: 'Profile', showBackButton: true),
-          Padding(
-            padding: const EdgeInsets.only(top: 287), // Immersive header height
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: IrmaTheme.margin),
+          // CONTENT
+          SingleChildScrollView(
+            padding: const EdgeInsets.only(top: 80, bottom: 40, left: 24, right: 24),
               child: Column(
                 children: [
                   const SizedBox(height: 32),
@@ -116,6 +114,13 @@ class IrmaProfileHubScreen extends ConsumerWidget {
                 ],
               ),
             ),
+          
+          // TOP NAV
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: IrmaNavigationBar(title: 'Profile', showBackButton: true),
           ),
         ],
       ),

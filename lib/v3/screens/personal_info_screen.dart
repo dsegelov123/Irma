@@ -102,11 +102,8 @@ class _IrmaPersonalInfoScreenState extends ConsumerState<IrmaPersonalInfoScreen>
     return Scaffold(
       body: Stack(
         children: [
-          const IrmaNavigationBar(title: 'Personal Info', showBackButton: true),
-          Padding(
-            padding: const EdgeInsets.only(top: 287),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(IrmaTheme.margin),
+          SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 80, 24, 40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -132,7 +129,8 @@ class _IrmaPersonalInfoScreenState extends ConsumerState<IrmaPersonalInfoScreen>
                     onTap: () => _selectDate(context),
                     child: Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                      height: 52, // Gospel Input Height
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                       decoration: BoxDecoration(
                         color: IrmaTheme.pureWhite,
                         borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
@@ -208,14 +206,20 @@ class _IrmaPersonalInfoScreenState extends ConsumerState<IrmaPersonalInfoScreen>
                   
                   Center(
                     child: IrmaPrimaryButton(
-                      text: 'Save Changes',
-                      onPressed: _saveProfile,
+                      label: 'Save Changes',
+                      onTap: _saveProfile,
                     ),
                   ),
                   const SizedBox(height: 40),
                 ],
               ),
             ),
+          // TOP NAV
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: IrmaNavigationBar(title: 'Personal Info', showBackButton: true),
           ),
         ],
       ),

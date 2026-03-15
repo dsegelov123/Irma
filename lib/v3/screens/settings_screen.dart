@@ -19,7 +19,7 @@ class IrmaSettingsScreen extends ConsumerWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(top: 320, bottom: 40, left: 24, right: 24),
+            padding: const EdgeInsets.only(top: 80, bottom: 40, left: 24, right: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

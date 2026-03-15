@@ -18,22 +18,27 @@ class IrmaPrimaryButton extends StatelessWidget {
     return GestureDetector(
       onTap: isLoading ? null : onTap,
       child: Container(
-        width: 143, // EXACT Gospel Width
-        height: 48, // EXACT Gospel Height
+        width: double.infinity,
+        height: 40, // EXACT Gospel Height (Rectified from 48)
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8), // EXACT Gospel Padding
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          gradient: IrmaTheme.primaryGradient, // Gospel Orange-Purple
-          borderRadius: BorderRadius.circular(IrmaTheme.radiusAction), // Gospel Rule for BTNS
+          gradient: IrmaTheme.primaryGradient,
+          borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFFF7B61).withOpacity(0.3),
+              color: const Color(0xFFFF5E76).withOpacity(0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: isLoading
-            ? const SizedBox(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (isLoading)
+              const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
@@ -41,7 +46,9 @@ class IrmaPrimaryButton extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(IrmaTheme.pureWhite),
                 ),
               )
-            : Text(
+            else ...[
+              // Placeholder for potential Icon (Gap 4 logic)
+              Text(
                 label,
                 style: IrmaTheme.inter.copyWith(
                   color: IrmaTheme.pureWhite,
@@ -49,6 +56,9 @@ class IrmaPrimaryButton extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+            ],
+          ],
+        ),
       ),
     );
   }

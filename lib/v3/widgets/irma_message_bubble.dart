@@ -22,7 +22,7 @@ class IrmaMessageBubble extends StatelessWidget {
         children: [
           if (isBot) ...[
             _buildBotIcon(),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10), // EXACT Gospel Gap
           ],
           Flexible(
             child: Container(

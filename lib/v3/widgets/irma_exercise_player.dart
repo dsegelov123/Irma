@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'dart:async';
 import '../theme/irma_theme.dart';
-import 'irma_congratulations_screen.dart';
+import '../screens/irma_congratulations_screen.dart';
 
 class IrmaExercisePlayer extends StatefulWidget {
   final String programTitle;
@@ -58,7 +58,7 @@ class _IrmaExercisePlayerState extends State<IrmaExercisePlayer> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const IrmaCongratulationsScreen(),
+        builder: (context) => IrmaCongratulationsScreen(),
       ),
     );
   }

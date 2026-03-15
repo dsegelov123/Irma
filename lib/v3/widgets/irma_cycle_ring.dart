@@ -57,6 +57,7 @@ class IrmaCycleRing extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
+            const SizedBox(height: 4),
             Text(
               currentDay.toString(),
               style: IrmaTheme.outfit.copyWith(
@@ -66,6 +67,7 @@ class IrmaCycleRing extends StatelessWidget {
                 height: 1.1,
               ),
             ),
+            const SizedBox(height: 16), // EXACT Gospel Gap
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(

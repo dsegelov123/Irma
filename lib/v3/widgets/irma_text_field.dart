@@ -32,20 +32,15 @@ class IrmaTextField extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Container(
+          width: 345, // EXACT Gospel Width
+          height: 52, // EXACT Gospel Height
           decoration: BoxDecoration(
             color: IrmaTheme.pureWhite,
-            borderRadius: BorderRadius.circular(IrmaTheme.radiusAction), // 24px Gospel Radius for Inputs
+            borderRadius: BorderRadius.circular(IrmaTheme.radiusAction), // 32px Gospel Radius
             border: Border.all(
               color: IrmaTheme.borderLight,
               width: 1.5,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: IrmaTheme.pureBlack.withOpacity(0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: TextField(
             controller: controller,
@@ -55,7 +50,7 @@ class IrmaTextField extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: IrmaTheme.inter.copyWith(color: IrmaTheme.textSub),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14), // Gospel Padding
               border: InputBorder.none,
             ),
           ),

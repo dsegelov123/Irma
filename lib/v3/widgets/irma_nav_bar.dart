@@ -19,37 +19,52 @@ class IrmaNavigationBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(287);
+  Size get preferredSize => const Size.fromHeight(40);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 287,
-      decoration: const BoxDecoration(
-        gradient: IrmaTheme.headerGradient,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(IrmaTheme.radiusLarge),
-          topRight: Radius.circular(IrmaTheme.radiusLarge),
+    return SafeArea(
+      child: Container(
+        width: 345, // EXACT Gospel Width
+        height: 40, // EXACT Gospel Height
+        padding: const EdgeInsets.symmetric(vertical: 1), // Gospel Padding
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Left Action (e.g. Back or Sync Icon)
+            if (showBackButton)
+              _buildIconButton(Icons.arrow_back_ios, () => Navigator.pop(context))
+            else
+              const Icon(Iconsax.flash_1, color: IrmaTheme.menstrual, size: 24),
+            
+            // Title
+            Text(
+              title,
+              style: IrmaTheme.outfit.copyWith(
+                color: IrmaTheme.textMain,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            // Right Action (Profile or Notification)
+            _buildIconButton(Iconsax.user, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const IrmaProfileHubScreen()),
+              );
+            }),
+          ],
         ),
       ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(IrmaTheme.radiusLarge),
-          topRight: Radius.circular(IrmaTheme.radiusLarge),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Stack(
-            children: [
-              // Chat Navbar Variant content
-              if (isChat)
-                _buildChatNavbar(context)
-              else
-                _buildDefaultNavbar(context),
-            ],
-          ),
-        ),
-      ),
+    );
+  }
+
+  Widget _buildIconButton(IconData icon, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Icon(icon, color: IrmaTheme.textMain, size: 22),
     );
   }
 

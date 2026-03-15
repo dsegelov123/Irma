@@ -19,7 +19,7 @@ class IrmaSelfCareScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 320), // Top nav spacer (Gospel Immersive)
+                const SizedBox(height: 80), // Top nav spacer (Gospel Standard)
                 
                 // HEADER TITLE
                 Padding(
@@ -62,14 +62,14 @@ class IrmaSelfCareScreen extends ConsumerWidget {
                         title: "Meditation",
                         subtitle: "Calm your mind",
                         icon: Iconsax.mask,
-                        color: IrmaTheme.ovulatory,
+                        color: IrmaTheme.ovulation,
                       ),
                       const SizedBox(height: 16),
                       _buildProgramTile(
                         context,
                         title: "Skin Care",
                         subtitle: "Facial & Skin health",
-                        icon: Iconsax.magic_mirror,
+                        icon: Iconsax.personalcard,
                         color: IrmaTheme.luteal,
                       ),
                       const SizedBox(height: 120), // Bottom nav spacer

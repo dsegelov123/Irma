@@ -4,6 +4,7 @@ import 'identity_screen.dart';
 import 'auth_screen.dart';
 
 import '../widgets/irma_text_field.dart';
+import '../widgets/irma_buttons.dart';
 class IrmaAuthSelectionScreen extends StatelessWidget {
   const IrmaAuthSelectionScreen({super.key});
 
@@ -32,9 +33,9 @@ class IrmaAuthSelectionScreen extends StatelessWidget {
             ),
             const Spacer(),
             
-            // SIGN UP BUTTON
-            _buildPrimaryButton(
-              text: "Create Account",
+            // SIGN UP BUTTON (Gospel Rectified)
+            IrmaPrimaryButton(
+              label: "Create Account",
               onTap: () {
                 Navigator.push(
                   context,
@@ -45,15 +46,33 @@ class IrmaAuthSelectionScreen extends StatelessWidget {
             
             const SizedBox(height: 16),
             
-            // LOGIN BUTTON
-            _buildSecondaryButton(
-              text: "Log In",
+            // LOGIN BUTTON (Gospel Rectified Secondary Placeholder)
+            // For now using Container to match Secondary spec until IrmaSecondaryButton is added to component file
+            GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const IrmaAuthScreen(initialMode: AuthMode.login)),
                 );
               },
+              child: Container(
+                height: 40, // Gospel Height
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: IrmaTheme.pureWhite,
+                  borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
+                  border: Border.all(color: IrmaTheme.borderLight, width: 2),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  "Log In",
+                  style: IrmaTheme.inter.copyWith(
+                    color: IrmaTheme.textMain,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
 
             const SizedBox(height: 32),
@@ -89,52 +108,6 @@ class IrmaAuthSelectionScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPrimaryButton({required String text, required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 56,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: IrmaTheme.primaryGradient,
-          borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          text,
-          style: IrmaTheme.outfit.copyWith(
-            color: IrmaTheme.pureWhite,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSecondaryButton({required String text, required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 56,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: IrmaTheme.pureWhite,
-          borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-          border: Border.all(color: IrmaTheme.borderLight, width: 2),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          text,
-          style: IrmaTheme.outfit.copyWith(
-            color: IrmaTheme.textMain,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildSocialIcon(IconData icon, {double size = 30}) {
     return Container(

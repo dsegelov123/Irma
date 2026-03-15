@@ -10,6 +10,7 @@ import '../models/irma_cycle_data.dart';
 import '../widgets/irma_buttons.dart';
 import 'symptoms_screen.dart';
 import 'settings_screen.dart';
+import 'irma_edit_period_screen.dart';
 
 class IrmaDashboardScreen extends ConsumerWidget {
   const IrmaDashboardScreen({super.key});
@@ -25,7 +26,7 @@ class IrmaDashboardScreen extends ConsumerWidget {
     
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(top: 320, bottom: 120), // Padding for nav bars
+      padding: const EdgeInsets.only(top: 80, bottom: 120), // Standard Gospel Padding for 40px nav
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -45,7 +46,12 @@ class IrmaDashboardScreen extends ConsumerWidget {
             child: IrmaPrimaryButton(
               label: "Log Period",
               onTap: () {
-                // Navigate to period logging screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const IrmaEditPeriodScreen(),
+                  ),
+                );
               },
             ),
           ),
@@ -66,7 +72,7 @@ class IrmaDashboardScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           SizedBox(
-            height: 196,
+            height: 145, // EXACT Gospel Height for Insight Cards
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 24),

@@ -87,7 +87,7 @@ class _IrmaChatScreenState extends ConsumerState<IrmaChatScreen> {
         children: [
           Column(
             children: [
-              const SizedBox(height: 287), // Strict Gospel Immersion Height
+              const SizedBox(height: 80), // Standard Gospel Top Spacer
               
               // CHAT LIST
               Expanded(

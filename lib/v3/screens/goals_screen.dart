@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/irma_theme.dart';
 import '../widgets/irma_nav_bar.dart';
 import 'cycle_setup_screen.dart';
+import '../widgets/irma_buttons.dart';
 
 class IrmaChip extends StatelessWidget {
   final String label;
@@ -82,7 +83,7 @@ class _IrmaGoalsScreenState extends State<IrmaGoalsScreen> {
         showBackButton: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 320, 24, 24),
+        padding: const EdgeInsets.fromLTRB(24, 80, 24, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -124,35 +125,15 @@ class _IrmaGoalsScreenState extends State<IrmaGoalsScreen> {
 
             const SizedBox(height: 60),
 
-            // CONTINUE BUTTON
-            GestureDetector(
-              onTap: _selectedGoals.isEmpty ? null : () {
+            IrmaPrimaryButton(
+              label: "Continue",
+              onTap: _selectedGoals.isEmpty ? () {} : () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const IrmaCycleSetupScreen()),
                 );
               },
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 300),
-                opacity: _selectedGoals.isEmpty ? 0.5 : 1.0,
-                child: Container(
-                  height: 56,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: IrmaTheme.primaryGradient,
-                    borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Continue",
-                    style: IrmaTheme.outfit.copyWith(
-                      color: IrmaTheme.pureWhite,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
+              isLoading: false, // Could also use a 'disabled' state but PrimaryButton doesn't have it yet, using empty callback for now to match logic
             ),
           ],
         ),

@@ -13,14 +13,13 @@ class IrmaTheme {
   static const Color ovulation = Color(0xFFFDBB2D);
   static const Color luteal = Color(0xFF8E7AB5);
 
-  // Layout Tokens (Gospel)
+  // Layout Tokens (Gospel Track 13 Rectification)
   static const double radiusCard = 32.0;       // Large Cards / Standard
   static const double radiusCardMedium = 20.0; // Symptom Cards
   static const double radiusCardSmall = 16.0;  // Status Box / Info Cards
-  static const double radiusAction = 24.0;     // Buttons / Text Inputs
-  static const double radiusTile = 12.0;       // Small tiles / Contact buttons
+  static const double radiusAction = 24.0;     // Corrected to 24px as per Gospel v3
+  static const double radiusTile = 16.0;       // Rectified to 16
   static const double radiusLarge = 40.0;      // Bottom Nav / Immersive elements
-  static const double radius = 32.0;           // Generic / Legacy (deprecated in favor of semantic tokens)
   
   static const double margin = 24.0;
   
@@ -35,15 +34,15 @@ class IrmaTheme {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFFFF7B61), // Gospel Orange
-      Color(0xFF8A38F5), // Gospel Purple
+      Color(0xFFFF5E76), // Menstrual Red
+      Color(0xFFE04A62), // Deep Rose
     ],
   );
 
   static const LinearGradient headerGradient = LinearGradient(
     colors: [
-      Color(0xFFFF7B61), // Gospel Orange
-      Color(0xFF8A38F5), // Gospel Purple
+      Color(0xFFFF5E76), // Menstrual Red
+      Color(0xFFE04A62), // Deep Rose
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

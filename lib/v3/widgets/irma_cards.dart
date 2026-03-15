@@ -18,9 +18,9 @@ class IrmaInsightCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 168,
-      height: 196,
-      padding: const EdgeInsets.all(20),
+      width: 143, // EXACT Gospel Width
+      height: 145, // EXACT Gospel Height
+      padding: const EdgeInsets.all(16), // EXACT Gospel Padding
       decoration: BoxDecoration(
         color: IrmaTheme.pureWhite,
         borderRadius: BorderRadius.circular(IrmaTheme.radiusCard),
@@ -44,7 +44,7 @@ class IrmaInsightCard extends StatelessWidget {
             ),
             child: Icon(icon, color: baseColor, size: 24),
           ),
-          const Spacer(),
+          const SizedBox(height: 24), // EXACT Gospel Gap
           Text(
             title,
             style: IrmaTheme.inter.copyWith(
@@ -58,7 +58,7 @@ class IrmaInsightCard extends StatelessWidget {
             value,
             style: IrmaTheme.outfit.copyWith(
               color: IrmaTheme.textMain,
-              fontSize: 22,
+              fontSize: 20, // Adjusted for smaller card
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -87,11 +87,11 @@ class IrmaDashboardCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: double.infinity,
+        width: 345, // Standard Gospel Hero Width
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: IrmaTheme.pureWhite,
-          borderRadius: BorderRadius.circular(IrmaTheme.radiusCard),
+          borderRadius: BorderRadius.circular(IrmaTheme.radiusCard), // 32px Gospel Radius
           border: Border.all(color: IrmaTheme.borderLight),
           boxShadow: [
             BoxShadow(
@@ -103,6 +103,7 @@ class IrmaDashboardCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min, // Hug content
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

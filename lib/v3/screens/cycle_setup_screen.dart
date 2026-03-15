@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/irma_theme.dart';
 import '../widgets/irma_nav_bar.dart';
+import '../widgets/irma_buttons.dart';
 import '../models/irma_cycle_data.dart';
 import '../providers/irma_state_providers.dart';
 import 'irma_app_shell.dart';
@@ -28,7 +29,7 @@ class _IrmaCycleSetupScreenState extends ConsumerState<IrmaCycleSetupScreen> {
         showBackButton: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 320, 24, 24),
+        padding: const EdgeInsets.fromLTRB(24, 80, 24, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -72,7 +73,7 @@ class _IrmaCycleSetupScreenState extends ConsumerState<IrmaCycleSetupScreen> {
                 }
               },
               child: Container(
-                height: 56,
+                height: 52, // Gospel Input Height
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
@@ -132,8 +133,8 @@ class _IrmaCycleSetupScreenState extends ConsumerState<IrmaCycleSetupScreen> {
 
             const SizedBox(height: 60),
 
-            // FINISH BUTTON
-            GestureDetector(
+            IrmaPrimaryButton(
+              label: "Finish Setup",
               onTap: () async {
                 final cycleData = IrmaCycleData(
                   lastPeriodDate: _selectedDate,
@@ -150,23 +151,6 @@ class _IrmaCycleSetupScreenState extends ConsumerState<IrmaCycleSetupScreen> {
                   );
                 }
               },
-              child: Container(
-                height: 56,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: IrmaTheme.primaryGradient,
-                  borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  "Finish Setup",
-                  style: IrmaTheme.outfit.copyWith(
-                    color: IrmaTheme.pureWhite,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
             ),
           ],
         ),

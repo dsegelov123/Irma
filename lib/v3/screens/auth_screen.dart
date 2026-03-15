@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import '../theme/irma_theme.dart';
 import '../services/irma_supabase_service.dart';
 import '../widgets/irma_text_field.dart';
+import '../widgets/irma_buttons.dart';
 import 'auth_selection_screen.dart';
 import 'identity_screen.dart';
 
@@ -123,34 +124,10 @@ class _IrmaAuthScreenState extends ConsumerState<IrmaAuthScreen> {
                 
               const SizedBox(height: 48),
               
-              GestureDetector(
-                onTap: _isLoading ? null : _handleAuth,
-                child: Container(
-                  height: 56,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: IrmaTheme.primaryGradient,
-                    borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-                    boxShadow: _isLoading ? null : [
-                      BoxShadow(
-                        color: IrmaTheme.menstrual.withOpacity(0.3),
-                        blurRadius: 15,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  alignment: Alignment.center,
-                  child: _isLoading 
-                    ? const CircularProgressIndicator(color: IrmaTheme.pureWhite)
-                    : Text(
-                        _mode == AuthMode.login ? "Log In" : "Sign Up",
-                        style: IrmaTheme.outfit.copyWith(
-                          color: IrmaTheme.pureWhite,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                ),
+              IrmaPrimaryButton(
+                label: _mode == AuthMode.login ? "Log In" : "Sign Up",
+                onTap: _handleAuth,
+                isLoading: _isLoading,
               ),
               
               const SizedBox(height: 32),

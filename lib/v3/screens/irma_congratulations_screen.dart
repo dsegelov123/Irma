@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../theme/irma_theme.dart';
+import '../widgets/irma_buttons.dart';
 
 class IrmaCongratulationsScreen extends StatelessWidget {
   const IrmaCongratulationsScreen({super.key});
@@ -48,34 +49,11 @@ class IrmaCongratulationsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 60),
-            // PRIMARY ACTION (Return Home)
-            Container(
-              width: double.infinity,
-              height: 56,
-              decoration: BoxDecoration(
-                gradient: IrmaTheme.primaryGradient,
-                borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-              ),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.popUntil(context, (route) => route.isFirst);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-                  ),
-                ),
-                child: Text(
-                  "Return to Home",
-                  style: IrmaTheme.outfit.copyWith(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: IrmaTheme.pureWhite,
-                  ),
-                ),
-              ),
+            IrmaPrimaryButton(
+              label: "Return to Home",
+              onTap: () {
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
             ),
           ],
         ),

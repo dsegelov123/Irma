@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import '../theme/irma_theme.dart';
 import '../widgets/irma_nav_bar.dart';
 import '../widgets/irma_status_box.dart';
+import '../widgets/irma_buttons.dart';
 import '../models/irma_partner.dart';
 import '../services/irma_partner_service.dart';
 
@@ -20,7 +21,7 @@ class IrmaPartnerScreen extends ConsumerWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(top: 320, bottom: 40, left: 24, right: 24),
+            padding: const EdgeInsets.only(top: 80, bottom: 40, left: 24, right: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -91,25 +92,9 @@ class IrmaPartnerScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              GestureDetector(
+              IrmaPrimaryButton(
+                label: "Invite Partner",
                 onTap: () => _showAddPartnerDialog(context, ref),
-                child: Container(
-                  height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  decoration: BoxDecoration(
-                    color: IrmaTheme.follicular,
-                    borderRadius: BorderRadius.circular(IrmaTheme.radiusAction),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Invite Partner",
-                    style: IrmaTheme.outfit.copyWith(
-                      color: IrmaTheme.pureWhite,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
               ),
             ],
           ),
